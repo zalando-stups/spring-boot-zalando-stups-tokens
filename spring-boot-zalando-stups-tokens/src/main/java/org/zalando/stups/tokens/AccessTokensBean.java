@@ -46,14 +46,24 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
 
     @Override
     public String get(final Object tokenId) throws AccessTokenUnavailableException {
+        try {
 
-        return accessTokensDelegate.get(tokenId);
+            return accessTokensDelegate.get(tokenId);
+        } catch (AccessTokenUnavailableException e) {
+            logger.error("Token unavailable for service : {}", tokenId.toString());
+            throw e;
+        }
     }
 
     @Override
     public AccessToken getAccessToken(final Object tokenId) throws AccessTokenUnavailableException {
+        try {
 
-        return accessTokensDelegate.getAccessToken(tokenId);
+            return accessTokensDelegate.getAccessToken(tokenId);
+        } catch (AccessTokenUnavailableException e) {
+            logger.error("Token unavailable for service : {}", tokenId.toString());
+            throw e;
+        }
     }
 
     @Override
