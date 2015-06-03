@@ -82,24 +82,24 @@ public class AccessTokensBeanProperties {
         return tokenConfigurationList;
     }
 
-    public void setTokenConfigurationList(final List<TokenConfiguration> tokenConfigurationList) {
-        this.tokenConfigurationList = tokenConfigurationList;
-    }
+// public void setTokenConfigurationList(final List<TokenConfiguration> tokenConfigurationList) {
+// this.tokenConfigurationList = tokenConfigurationList;
+// }
 
     public String getUserCredentialsFilename() {
         return userCredentialsFilename;
     }
 
-    public void setUserCredentialsFilename(final String userCredentialsFilename) {
-        this.userCredentialsFilename = userCredentialsFilename;
-    }
+// public void setUserCredentialsFilename(final String userCredentialsFilename) {
+// this.userCredentialsFilename = userCredentialsFilename;
+// }
 
     public String getClientCredentialsFilename() {
         return clientCredentialsFilename;
     }
 
-    public void setClientCredentialsFilename(final String clientCredentialsFilename) {
-        this.clientCredentialsFilename = clientCredentialsFilename;
-    }
+// public void setClientCredentialsFilename(final String clientCredentialsFilename) {
+// this.clientCredentialsFilename = clientCredentialsFilename;
+// }
 
 }

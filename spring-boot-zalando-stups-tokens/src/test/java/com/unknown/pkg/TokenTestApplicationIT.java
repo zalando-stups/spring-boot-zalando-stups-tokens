@@ -63,7 +63,42 @@ public class TokenTestApplicationIT {
     public void retrieveToken() throws InterruptedException {
 
         // give the controller a chance to initialize
-        TimeUnit.SECONDS.sleep(4);
+        TimeUnit.SECONDS.sleep(2);
+
+        Assertions.assertThat(tokens.isRunning()).isTrue();
+
+        // calling start after it is started should not cause any errors
+        tokens.start();
+
+        // it should be running
+        Assertions.assertThat(tokens.isRunning()).isTrue();
+        testing();
+
+        accessTokens.invalidate("firstService");
+
+        tokens.stop(new Runnable() {
+
+                @Override
+                public void run() {
+                    System.out.println("STOPPED");
+                }
+            });
+
+        //
+        tokens.stop();
+
+        Assertions.assertThat(tokens.isRunning()).isFalse();
+
+        tokens.start();
+
+        Assertions.assertThat(tokens.isRunning()).isTrue();
+        TimeUnit.SECONDS.sleep(2);
+        testing();
+
+        System.out.println("KILL");
+    }
+
+    protected void testing() {
         Assertions.assertThat(accessTokensBeanProperties).isNotNull();
         Assertions.assertThat(accessTokensBeanProperties.getTokenConfigurationList()).isNotEmpty();
 
@@ -97,10 +132,6 @@ public class TokenTestApplicationIT {
 
         String accessTokenString = accessTokens.get("firstService");
         Assertions.assertThat(accessTokenString).isEqualTo("123456789-987654321");
-
-        accessTokens.invalidate("firstService");
-
-        System.out.println("KILL");
     }
 
     static class TokenIdFilter implements Predicate<TokenConfiguration> {

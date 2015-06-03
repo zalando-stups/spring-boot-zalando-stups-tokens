@@ -5,6 +5,8 @@ server:
 tokens:
     accessTokenUri: http://localhost:9191/access_token?realm=whatever
     credentialsDirectory: ${user.dir}/somepath/credentials
+    refreshPercentLeft: 30
+    warnPercentLeft: 10
 
     token-configuration-list:
         - tokenId: firstService

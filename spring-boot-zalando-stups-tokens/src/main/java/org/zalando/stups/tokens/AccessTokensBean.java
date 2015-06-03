@@ -93,8 +93,6 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
             return;
         }
 
-        logger.info("Container seems up an running");
-
         // TODO, if something fails here, shall we shutdown the container?
         AccessTokensBuilder builder = Tokens.createAccessTokensWithUri(accessTokensBeanProperties.getAccessTokenUri());
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
