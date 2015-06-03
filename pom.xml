@@ -3,18 +3,15 @@
     <parent>
         <groupId>org.zalando.stups.build</groupId>
         <artifactId>stups-parent</artifactId>
-        <version>3</version>
+        <version>4</version>
         <relativePath />
     </parent>
     <groupId>org.zalando.stups</groupId>
-    <artifactId>zalando-booties-parent</artifactId>
+    <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
     <version>0.5.3-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>spring-boot-starter-data-jpa-eclipselink</module>
-        <module>spring-boot-starter-guava-eventbus</module>
-        <module>spring-boot-zalando-stups-twintip</module>
         <module>spring-boot-zalando-stups-tokens</module>
     </modules>
 
@@ -89,56 +86,15 @@
         </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.2</version>
-                <configuration>
-                    <source>${java.source}</source>
-                    <target>${java.target}</target>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-scm-plugin</artifactId>
-                <version>1.9.2</version>
-                <configuration>
-                    <connectionType>connection</connectionType>
-                    <tag>${project.version}</tag>
-                </configuration>
-            </plugin>
-            <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
                 <version>3.1.0</version>
                 <configuration>
                     <dryRun>${coveralls.dryRun}</dryRun>
                     <jacocoReports>
-                        <jacocoReport>spring-boot-zalando-stups-twintip/target/site/jacoco-it/jacoco.xml</jacocoReport>
                         <jacocoReport>spring-boot-zalando-stups-tokens/target/site/jacoco-it/jacoco.xml</jacocoReport>
-                        <jacocoReport>spring-boot-starter-guava-eventbus/target/site/jacoco-it/jacoco.xml</jacocoReport>
-                        <jacocoReport>spring-boot-starter-data-jpa-eclipselink/target/site/jacoco-it/jacoco.xml</jacocoReport>
                     </jacocoReports>
                 </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.mycila</groupId>
-                <artifactId>license-maven-plugin</artifactId>
-                <version>2.8</version>
-                <configuration>
-                    <header>${main.basedir}/src/etc/header.txt</header>
-                    <includes>
-                        <include>src/main/java/**/*.java</include>
-                        <include>src/test/java/**/*.java</include>
-                    </includes>
-                    <strictCheck>true</strictCheck>
-                </configuration>
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
             </plugin>
         </plugins>
     </build>
@@ -159,9 +115,9 @@
     </profiles>
 
     <scm>
-        <url>https://github.com/zalando-stups/booties.git</url>
-        <connection>scm:git:https://github.com/zalando-stups/booties.git</connection>
-        <developerConnection>scm:git:https://github.com/zalando-stups/booties.git</developerConnection>
+        <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
+        <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
+        <developerConnection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 </project>

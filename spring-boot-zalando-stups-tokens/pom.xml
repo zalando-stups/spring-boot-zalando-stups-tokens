@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.zalando.stups</groupId>
-        <artifactId>zalando-booties-parent</artifactId>
+        <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
         <version>0.5.3-SNAPSHOT</version>
     </parent>
     <artifactId>spring-boot-zalando-stups-tokens</artifactId>

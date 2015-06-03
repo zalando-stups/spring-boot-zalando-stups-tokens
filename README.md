@@ -1,31 +1,43 @@
 [![Build Status](https://travis-ci.org/zalando-stups/booties.svg?branch=master)](https://travis-ci.org/zalando-stups/booties) [![Coverage Status](https://coveralls.io/repos/zalando-stups/booties/badge.svg)](https://coveralls.io/r/zalando-stups/booties)
 
-#Booties
+## Spring-Boot STUPS AccessTokens Support
 
-##STUPS-Support
+Is a small wrapper around [Tokens](https://github.com/zalando-stups/tokens) with lifecycle-management and autoconfiguration-support in Spring-Boot applications.
 
-Some starters that helps integration of your application into [STUPS - Platform](http://stups.io).
+###Build
 
-###spring-boot-zalando-stups-twintip
-
-[Zalando-STUPS-Twintip Support](https://github.com/zalando-stups/booties/tree/master/spring-boot-zalando-stups-twintip).
-
-###spring-boot-zalando-stups-tokens
-
-[Zalando-STUPS-Tokens Support](https://github.com/zalando-stups/booties/tree/master/spring-boot-zalando-stups-tokens).
+    mvn install
 
 
-## NON-STUPS
 
-###spring-boot-starter-guava-eventbus
+###Install
 
-[Simple integration of Guava-Eventbus](https://github.com/zalando-stups/booties/tree/master/spring-boot-starter-guava-eventbus).
+Add the following to your pom.xml when using maven.
 
-###spring-boot-starter-data-jpa-eclipselink
+    <dependency>
+        <groupId>org.zalando.stups</groupId>
+        <artifactId>spring-boot-zalando-stups-tokens</artifactId>
+        <version>${version}</version>
+    </dependency>
 
-[If you don't like Hibernate you can use EclipseLink](https://github.com/zalando-stups/booties/tree/master/spring-boot-starter-data-jpa-eclipselink).
+###Configuration
 
+    tokens:
+        accessTokenUri: http://localhost:9191/access_token?realm=whatever
+        credentialsDirectory: ${user.dir}/somepath/credentials
+    
+        token-configuration-list:
+            - tokenId: firstService
+              scopes:
+                  - refole:read
+                  - refole:write
+                  - refole:all
+            - tokenId: secondService
+              scopes: singleScope:all
 
+###Usage
+
+With this in place you can use the 'AccessTokens' anywhere in your application (@Autowire directly or in a configuration class), use it directly or inject it into some 'TokenProvider'-implementations that delegate somehow.
 
 
 ## License
