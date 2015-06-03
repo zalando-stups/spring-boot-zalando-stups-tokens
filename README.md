@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/zalando-stups/booties.svg?branch=master)](https://travis-ci.org/zalando-stups/booties) [![Coverage Status](https://coveralls.io/repos/zalando-stups/booties/badge.svg)](https://coveralls.io/r/zalando-stups/booties)
+[![Build Status](https://travis-ci.org/zalando-stups/booties.svg?branch=master)](https://travis-ci.org/zalando-stups/booties) [![Coverage Status](https://coveralls.io/repos/zalando-stups/spring-boot-zalando-stups-tokens/badge.svg)](https://coveralls.io/r/zalando-stups/spring-boot-zalando-stups-tokens)
 
 ## Spring-Boot STUPS AccessTokens Support
 
@@ -7,7 +7,6 @@ Is a small wrapper around [Tokens](https://github.com/zalando-stups/tokens) with
 ###Build
 
     mvn install
-
 
 
 ###Install
