@@ -24,6 +24,8 @@ import org.slf4j.LoggerFactory;
 
 import org.springframework.context.SmartLifecycle;
 
+import org.springframework.util.StringUtils;
+
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
 
@@ -31,6 +33,8 @@ import org.zalando.stups.tokens.config.TokenConfiguration;
  * @author  jbellmann
  */
 public class AccessTokensBean implements AccessTokens, SmartLifecycle {
+
+    static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
     private final Logger logger = LoggerFactory.getLogger(AccessTokensBean.class);
 
@@ -95,6 +99,11 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
 
         // TODO, if something fails here, shall we shutdown the container?
         AccessTokensBuilder builder = Tokens.createAccessTokensWithUri(accessTokensBeanProperties.getAccessTokenUri());
+        if (isTestingConfigured()) {
+
+            logger.info("Test-Tokens will be used instead of Token-Service.");
+        }
+
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
 
@@ -109,6 +118,27 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
         accessTokensDelegate = builder.start();
         running = true;
         logger.info("'accessTokenRefresher' started.");
+    }
+
+    protected final boolean isTestingConfigured() {
+        if (StringUtils.hasText(System.getProperty(OAUTH2_ACCESS_TOKENS))
+                && StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
+
+            logger.warn(
+                "'Test-Tokens' configured in yaml-file as also in ENV-VARIABLE 'OAUTH2_ACCESS_TOKENS' ! CONFIGURE ONLY ONE!");
+
+            return true;
+
+        } else if (StringUtils.hasText(System.getProperty(OAUTH2_ACCESS_TOKENS))) {
+
+            return true;
+        } else if (StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
+
+            System.setProperty(OAUTH2_ACCESS_TOKENS, accessTokensBeanProperties.getTestTokens());
+            return true;
+        }
+
+        return false;
     }
 
     @Override
@@ -132,13 +162,13 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
     @Override
     public int getPhase() {
 
-        // default
-        return 0;
+        return accessTokensBeanProperties.getPhase();
     }
 
     @Override
     public boolean isAutoStartup() {
-        return true;
+
+        return accessTokensBeanProperties.isAutoStartup();
     }
 
     @Override

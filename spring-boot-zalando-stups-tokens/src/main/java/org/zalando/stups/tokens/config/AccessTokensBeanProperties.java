@@ -44,6 +44,12 @@ public class AccessTokensBeanProperties {
 
     private String clientCredentialsFilename = CLIENT_JSON;
 
+    private String testTokens = null;
+
+    private boolean autoStartup = true;
+
+    private int phase = 0;
+
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
     public URI getAccessTokenUri() {
@@ -96,6 +102,30 @@ public class AccessTokensBeanProperties {
 
     public String getClientCredentialsFilename() {
         return clientCredentialsFilename;
+    }
+
+    public String getTestTokens() {
+        return testTokens;
+    }
+
+    public void setTestTokens(final String testTokens) {
+        this.testTokens = testTokens;
+    }
+
+    public boolean isAutoStartup() {
+        return autoStartup;
+    }
+
+    public void setAutoStartup(final boolean autoStartup) {
+        this.autoStartup = autoStartup;
+    }
+
+    public int getPhase() {
+        return phase;
+    }
+
+    public void setPhase(final int phase) {
+        this.phase = phase;
     }
 
 // public void setClientCredentialsFilename(final String clientCredentialsFilename) {

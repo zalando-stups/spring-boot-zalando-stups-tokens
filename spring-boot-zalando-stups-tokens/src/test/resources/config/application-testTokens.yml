@@ -1,14 +1,18 @@
 server:
-    port: 9191
+    port: 9195
 #
 #
 tokens:
-    accessTokenUri: http://localhost:9191/access_token?realm=whatever
+    accessTokenUri: http://localhost:9195/access_token?realm=whatever
     credentialsDirectory: ${user.dir}/somepath/credentials
     refreshPercentLeft: 30
     warnPercentLeft: 10
-    autoStartup: true
+    phase: 10
 
+    # these will be used during execution
+    testTokens: firstService=12345,secondService=56789
+
+    # but these also need to be configured, otherwise component can not be started
     token-configuration-list:
         - tokenId: firstService
           scopes:

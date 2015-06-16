@@ -40,7 +40,6 @@ import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
 
 import com.google.common.base.Predicate;
-import com.google.common.collect.Iterables;
 
 /**
  * @author  jbellmann
@@ -48,8 +47,8 @@ import com.google.common.collect.Iterables;
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {TokenTestApplication.class})
 @WebIntegrationTest(randomPort = false)
-@ActiveProfiles("custom")
-public class TokenTestApplicationIT {
+@ActiveProfiles("testTokens")
+public class ConfiguredTokenApplicationIT {
 
     static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
@@ -113,33 +112,16 @@ public class TokenTestApplicationIT {
         Assertions.assertThat(accessTokens).isNotNull();
 
         List<TokenConfiguration> services = accessTokensBeanProperties.getTokenConfigurationList();
-
-        Iterable<TokenConfiguration> firstServiceFilterResult = Iterables.filter(services,
-                new TokenIdFilter("firstService"));
-        Assertions.assertThat(Iterables.size(firstServiceFilterResult)).isEqualTo(1);
-
-        TokenConfiguration firstService = Iterables.getFirst(firstServiceFilterResult, null);
-        Assertions.assertThat(firstService).isNotNull();
-        Assertions.assertThat(firstService.getScopes()).isNotNull();
-        Assertions.assertThat(firstService.getScopes()).contains("refole:read", "refole:write", "refole:all");
-
-        Iterable<TokenConfiguration> secondServiceFilterResult = Iterables.filter(services,
-                new TokenIdFilter("secondService"));
-        Assertions.assertThat(Iterables.size(secondServiceFilterResult)).isEqualTo(1);
-
-        TokenConfiguration secondService = Iterables.getFirst(secondServiceFilterResult, null);
-        Assertions.assertThat(secondService).isNotNull();
-        Assertions.assertThat(secondService.getScopes()).isNotNull();
-        Assertions.assertThat(secondService.getScopes()).contains("singleScope:all");
+        Assertions.assertThat(services.size()).isGreaterThan(0);
 
         AccessToken accessToken = accessTokens.getAccessToken("firstService");
         Assertions.assertThat(accessToken).isNotNull();
-        Assertions.assertThat(accessToken.getToken()).isEqualTo("123456789-987654321");
-        Assertions.assertThat(accessToken.getType()).isEqualTo("Bearer");
-        Assertions.assertThat(accessToken.getInitialValidSeconds()).isEqualTo(5000);
+        Assertions.assertThat(accessToken.getToken()).isEqualTo("12345");
+        Assertions.assertThat(accessToken.getType()).isEqualTo("fixed");
+        Assertions.assertThat(accessToken.getInitialValidSeconds()).isEqualTo(31536000);
 
-        String accessTokenString = accessTokens.get("firstService");
-        Assertions.assertThat(accessTokenString).isEqualTo("123456789-987654321");
+        String accessTokenString = accessTokens.get("secondService");
+        Assertions.assertThat(accessTokenString).isEqualTo("56789");
     }
 
     static class TokenIdFilter implements Predicate<TokenConfiguration> {
