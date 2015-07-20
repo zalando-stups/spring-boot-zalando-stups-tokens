@@ -17,13 +17,27 @@ package org.zalando.stups.tokens;
 
 import static org.zalando.stups.tokens.AccessTokensBean.OAUTH2_ACCESS_TOKENS;
 
+import java.util.Properties;
+
 import org.assertj.core.api.Assertions;
 
 import org.junit.After;
 import org.junit.Test;
 
+import org.junit.runner.RunWith;
+
+import org.mockito.Mockito;
+
+import org.powermock.api.mockito.PowerMockito;
+
+import org.powermock.core.classloader.annotations.PrepareForTest;
+
+import org.powermock.modules.junit4.PowerMockRunner;
+
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 
+@RunWith(PowerMockRunner.class)
+@PrepareForTest({ AccessTokensBean.class, AccessTokensBeanTest.class })
 public class AccessTokensBeanTest {
 
     @After
@@ -50,7 +64,9 @@ public class AccessTokensBeanTest {
 
     @Test
     public void testLocalTestingWhenEnvConfigured() {
-        System.setProperty(OAUTH2_ACCESS_TOKENS, "ANY_TEXT");
+        PowerMockito.mockStatic(System.class);
+        Mockito.when(System.getenv(OAUTH2_ACCESS_TOKENS)).thenReturn("ANY_TEXT");
+        Mockito.when(System.getProperties()).thenReturn(new Properties());
 
         AccessTokensBeanProperties properties = new AccessTokensBeanProperties();
 

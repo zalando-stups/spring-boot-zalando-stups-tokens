@@ -97,11 +97,16 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
             return;
         }
 
-        // TODO, if something fails here, shall we shutdown the container?
-        AccessTokensBuilder builder = Tokens.createAccessTokensWithUri(accessTokensBeanProperties.getAccessTokenUri());
-        if (isTestingConfigured()) {
+        AccessTokensBuilder builder = null;
 
-            logger.info("Test-Tokens will be used instead of Token-Service.");
+        if (isTestingConfigured()) {
+            logger.info("Test-Tokens will be used");
+
+            builder = new FixedTokenAccessTokenBuilder(accessTokensBeanProperties.getAccessTokenUri(), getFixedToken());
+        } else {
+
+            // default
+            builder = Tokens.createAccessTokensWithUri(accessTokensBeanProperties.getAccessTokenUri());
         }
 
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
@@ -121,7 +126,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
     }
 
     protected final boolean isTestingConfigured() {
-        if (StringUtils.hasText(System.getProperty(OAUTH2_ACCESS_TOKENS))
+        if (StringUtils.hasText(System.getenv(OAUTH2_ACCESS_TOKENS))
                 && StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
 
             logger.warn(
@@ -129,16 +134,24 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
 
             return true;
 
-        } else if (StringUtils.hasText(System.getProperty(OAUTH2_ACCESS_TOKENS))) {
+        } else if (StringUtils.hasText(System.getenv(OAUTH2_ACCESS_TOKENS))) {
 
             return true;
         } else if (StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
 
-            System.setProperty(OAUTH2_ACCESS_TOKENS, accessTokensBeanProperties.getTestTokens());
             return true;
         }
 
         return false;
+    }
+
+    protected String getFixedToken() {
+        String token = System.getenv(OAUTH2_ACCESS_TOKENS);
+        if (StringUtils.hasText(token)) {
+            return token;
+        } else {
+            return accessTokensBeanProperties.getTestTokens();
+        }
     }
 
     @Override
