@@ -20,7 +20,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot.version>1.2.5.RELEASE</spring-boot.version>
-        <tokens.version>0.8.2</tokens.version>
+        <tokens.version>0.9.0</tokens.version>
 
         <java.source>1.8</java.source>
         <java.target>1.8</java.target>
