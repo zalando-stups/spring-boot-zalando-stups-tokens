@@ -97,6 +97,7 @@
                     <tagNameFormat>@{project.version}</tagNameFormat>
                     <remoteTagging>false</remoteTagging>
                     <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
                 </configuration>
             </plugin>
             <plugin>
