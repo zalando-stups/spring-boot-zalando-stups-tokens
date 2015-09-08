@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.zalando.stups</groupId>
     <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
-    <version>0.9.0-jdk7-0-SNAPSHOT</version>
+    <version>0.9.0-jdk7-M1</version>
     <packaging>pom</packaging>
 
     <modules>
@@ -131,5 +131,6 @@
         <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
         <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
         <developerConnection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
-    </scm>
+      <tag>0.9.0-jdk7-M1</tag>
+  </scm>
 </project>
