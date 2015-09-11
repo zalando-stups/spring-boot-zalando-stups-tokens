@@ -22,8 +22,8 @@
         <spring-boot.version>1.2.5.RELEASE</spring-boot.version>
         <tokens.version>0.9.0</tokens.version>
 
-        <java.source>1.8</java.source>
-        <java.target>1.8</java.target>
+        <java.source>1.7</java.source>
+        <java.target>1.7</java.target>
 
         <coveralls.dryRun>true</coveralls.dryRun>
         <main.basedir>${basedir}</main.basedir>
@@ -86,6 +86,20 @@
             </plugins>
         </pluginManagement>
         <plugins>
+            <plugin>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.1</version>
+                <configuration>
+                    <mavenExecutorId>forked-path</mavenExecutorId>
+                    <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <arguments>-Pcustom-release,maven</arguments>
+                    <tagNameFormat>@{project.version}</tagNameFormat>
+                    <remoteTagging>false</remoteTagging>
+                    <pushChanges>false</pushChanges>
+                    <localCheckout>true</localCheckout>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.eluder.coveralls</groupId>
                 <artifactId>coveralls-maven-plugin</artifactId>
