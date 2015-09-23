@@ -10,8 +10,11 @@
     <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
     <version>0.9.2-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <description>OAuth2-Tokens Library</description>
-    <organization>Zalando SE</organization>
+    <description>OAuth2-Tokens Library - Build-Parent</description>
+    <organization>
+        <name>Zalando SE</name>
+        <url>https://tech.zalando.com</url>
+    </organization>
 
     <modules>
         <module>spring-boot-zalando-stups-tokens</module>
@@ -21,8 +24,8 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>1.2.5.RELEASE</spring-boot.version>
-        <tokens.version>0.9.1</tokens.version>
+        <spring-boot.version>1.2.6.RELEASE</spring-boot.version>
+        <tokens.version>0.9.2</tokens.version>
 
         <java.source>1.7</java.source>
         <java.target>1.7</java.target>
