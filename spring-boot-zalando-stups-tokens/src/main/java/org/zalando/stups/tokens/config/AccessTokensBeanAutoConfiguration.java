@@ -15,14 +15,18 @@
  */
 package org.zalando.stups.tokens.config;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import java.io.File;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 import org.zalando.stups.tokens.AccessTokensBean;
+import org.zalando.stups.tokens.ClientCredentialsProvider;
+import org.zalando.stups.tokens.JsonFileBackedClientCredentialsProvider;
 
 /**
  * @author  jbellmann
@@ -38,4 +42,16 @@ public class AccessTokensBeanAutoConfiguration {
     public AccessTokensBean accessTokensBean() {
         return new AccessTokensBean(accessTokensBeanProperties);
     }
+    
+    @Bean
+    @ConditionalOnProperty(prefix="tokens", name="exposeClientCredentialProvider", havingValue="true")
+    public ClientCredentialsProvider clientCredentialsProvider(){
+    	return new JsonFileBackedClientCredentialsProvider(getCredentialsFile(
+                accessTokensBeanProperties.getClientCredentialsFilename()));
+    }
+
+    protected File getCredentialsFile(final String credentialsFilename) {
+        return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
+    }
+    
 }

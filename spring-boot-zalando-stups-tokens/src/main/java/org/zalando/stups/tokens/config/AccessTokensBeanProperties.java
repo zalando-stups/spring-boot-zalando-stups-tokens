@@ -49,6 +49,8 @@ public class AccessTokensBeanProperties {
     private boolean autoStartup = true;
 
     private int phase = 0;
+    
+    private boolean exposeClientCredentialProvider = false;
 
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
@@ -88,17 +90,9 @@ public class AccessTokensBeanProperties {
         return tokenConfigurationList;
     }
 
-// public void setTokenConfigurationList(final List<TokenConfiguration> tokenConfigurationList) {
-// this.tokenConfigurationList = tokenConfigurationList;
-// }
-
     public String getUserCredentialsFilename() {
         return userCredentialsFilename;
     }
-
-// public void setUserCredentialsFilename(final String userCredentialsFilename) {
-// this.userCredentialsFilename = userCredentialsFilename;
-// }
 
     public String getClientCredentialsFilename() {
         return clientCredentialsFilename;
@@ -128,8 +122,11 @@ public class AccessTokensBeanProperties {
         this.phase = phase;
     }
 
-// public void setClientCredentialsFilename(final String clientCredentialsFilename) {
-// this.clientCredentialsFilename = clientCredentialsFilename;
-// }
+	public boolean isExposeClientCredentialProvider() {
+		return exposeClientCredentialProvider;
+	}
 
+	public void setExposeClientCredentialProvider(boolean exposeClientCredentialProvider) {
+		this.exposeClientCredentialProvider = exposeClientCredentialProvider;
+	}
 }
