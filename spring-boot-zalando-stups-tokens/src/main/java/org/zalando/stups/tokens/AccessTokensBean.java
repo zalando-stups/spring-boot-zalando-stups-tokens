@@ -96,6 +96,8 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
         if (isRunning()) {
             return;
         }
+        
+        logger.info("starting 'accessTokensBean' ...");
 
         AccessTokensBuilder builder = null;
 
@@ -123,6 +125,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
         accessTokensDelegate = builder.start();
         running = true;
         logger.info("'accessTokenRefresher' started.");
+        logger.info("'accessTokensBean' started.");
     }
 
     protected final boolean isTestingConfigured() {

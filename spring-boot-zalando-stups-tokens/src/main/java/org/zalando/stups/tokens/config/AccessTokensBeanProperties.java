@@ -16,7 +16,6 @@
 package org.zalando.stups.tokens.config;
 
 import java.net.URI;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -51,6 +50,8 @@ public class AccessTokensBeanProperties {
     private int phase = 0;
     
     private boolean exposeClientCredentialProvider = false;
+    
+    private boolean startAfterCreation = false;
 
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
@@ -129,4 +130,13 @@ public class AccessTokensBeanProperties {
 	public void setExposeClientCredentialProvider(boolean exposeClientCredentialProvider) {
 		this.exposeClientCredentialProvider = exposeClientCredentialProvider;
 	}
+
+	public boolean isStartAfterCreation() {
+		return startAfterCreation;
+	}
+
+	public void setStartAfterCreation(boolean startAfterCreation) {
+		this.startAfterCreation = startAfterCreation;
+	}
+	
 }

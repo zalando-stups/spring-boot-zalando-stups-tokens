@@ -17,41 +17,48 @@ package org.zalando.stups.tokens.config;
 
 import java.io.File;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import org.zalando.stups.tokens.AccessTokensBean;
 import org.zalando.stups.tokens.ClientCredentialsProvider;
 import org.zalando.stups.tokens.JsonFileBackedClientCredentialsProvider;
 
 /**
- * @author  jbellmann
+ * @author jbellmann
  */
 @Configuration
 @EnableConfigurationProperties({ AccessTokensBeanProperties.class })
 public class AccessTokensBeanAutoConfiguration {
 
-    @Autowired
-    private AccessTokensBeanProperties accessTokensBeanProperties;
+	private final Logger logger = LoggerFactory.getLogger(AccessTokensBeanAutoConfiguration.class);
 
-    @Bean
-    public AccessTokensBean accessTokensBean() {
-        return new AccessTokensBean(accessTokensBeanProperties);
-    }
-    
-    @Bean
-    @ConditionalOnProperty(prefix="tokens", name="exposeClientCredentialProvider", havingValue="true")
-    public ClientCredentialsProvider clientCredentialsProvider(){
-    	return new JsonFileBackedClientCredentialsProvider(getCredentialsFile(
-                accessTokensBeanProperties.getClientCredentialsFilename()));
-    }
+	@Autowired
+	private AccessTokensBeanProperties accessTokensBeanProperties;
 
-    protected File getCredentialsFile(final String credentialsFilename) {
-        return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
-    }
-    
+	@Bean
+	public AccessTokensBean accessTokensBean() {
+		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
+		if (accessTokensBeanProperties.isStartAfterCreation()) {
+			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
+			bean.start();
+		}
+		return bean;
+	}
+
+	@Bean
+	@ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
+	public ClientCredentialsProvider clientCredentialsProvider() {
+		return new JsonFileBackedClientCredentialsProvider(
+				getCredentialsFile(accessTokensBeanProperties.getClientCredentialsFilename()));
+	}
+
+	protected File getCredentialsFile(final String credentialsFilename) {
+		return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
+	}
+
 }
