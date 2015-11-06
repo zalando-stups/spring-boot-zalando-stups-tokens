@@ -16,6 +16,7 @@
 package org.zalando.stups.tokens.config;
 
 import java.io.File;
+import java.util.Date;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +25,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.zalando.stups.tokens.AccessToken;
+import org.zalando.stups.tokens.AccessTokenUnavailableException;
+import org.zalando.stups.tokens.AccessTokens;
 import org.zalando.stups.tokens.AccessTokensBean;
 import org.zalando.stups.tokens.ClientCredentialsProvider;
 import org.zalando.stups.tokens.JsonFileBackedClientCredentialsProvider;
@@ -42,6 +46,11 @@ public class AccessTokensBeanAutoConfiguration {
 
 	@Bean
 	public AccessTokensBean accessTokensBean() {
+		if(accessTokensBeanProperties.isEnableMock()){
+			return new MockAccessTokensBean(accessTokensBeanProperties);
+		}
+
+		//
 		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
 		if (accessTokensBeanProperties.isStartAfterCreation()) {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
@@ -59,6 +68,48 @@ public class AccessTokensBeanAutoConfiguration {
 
 	protected File getCredentialsFile(final String credentialsFilename) {
 		return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
+	}
+	
+	static class MockAccessTokensBean extends AccessTokensBean {
+		
+		private final Logger logger = LoggerFactory.getLogger(MockAccessTokensBean.class);
+		
+		private static final String BEARER = "BEARER";
+		private static final String INVALID = "INVALID";
+		private final Date validUnti = new Date();
+
+		public MockAccessTokensBean(AccessTokensBeanProperties accessTokensBeanProperties) {
+			super(accessTokensBeanProperties);
+		}
+
+		@Override
+		public synchronized void start() {
+			logger.warn("USING MOCK_ACCESS_TOKENS_BEAN, OAUTH WILL NOT WORK !!!");
+			accessTokensDelegate = new AccessTokens() {
+				
+				@Override
+				public void stop() {
+				}
+				
+				@Override
+				public void invalidate(Object tokenId) {
+					
+				}
+				
+				@Override
+				public AccessToken getAccessToken(Object tokenId) throws AccessTokenUnavailableException {
+					return new AccessToken(INVALID, BEARER, -1, validUnti);
+				}
+				
+				@Override
+				public String get(Object tokenId) throws AccessTokenUnavailableException {
+					return INVALID;
+				}
+			};
+		}
+		
+		
+		
 	}
 
 }

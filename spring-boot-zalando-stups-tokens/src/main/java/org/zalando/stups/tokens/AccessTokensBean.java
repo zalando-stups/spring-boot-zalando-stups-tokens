@@ -38,7 +38,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
 
     private final Logger logger = LoggerFactory.getLogger(AccessTokensBean.class);
 
-    private AccessTokens accessTokensDelegate;
+    protected AccessTokens accessTokensDelegate;
 
     private final AccessTokensBeanProperties accessTokensBeanProperties;
 

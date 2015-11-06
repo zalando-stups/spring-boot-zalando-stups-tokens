@@ -52,6 +52,8 @@ public class AccessTokensBeanProperties {
     private boolean exposeClientCredentialProvider = false;
     
     private boolean startAfterCreation = false;
+    
+    private boolean enableMock = false;
 
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
@@ -138,5 +140,15 @@ public class AccessTokensBeanProperties {
 	public void setStartAfterCreation(boolean startAfterCreation) {
 		this.startAfterCreation = startAfterCreation;
 	}
+
+	public boolean isEnableMock() {
+		return enableMock;
+	}
+
+	public void setEnableMock(boolean enableMock) {
+		this.enableMock = enableMock;
+	}
+	
+	
 	
 }
