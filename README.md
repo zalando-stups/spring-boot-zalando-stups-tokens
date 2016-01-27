@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/zalando-stups/spring-boot-zalando-stups-tokens.svg?branch=master)](https://travis-ci.org/zalando-stups/spring-boot-zalando-stups-tokens) 
 ![Maven Central](https://img.shields.io/maven-central/v/org.zalando.stups/spring-boot-zalando-stups-tokens.svg)
-[![Coverage Status](https://coveralls.io/repos/zalando-stups/spring-boot-zalando-stups-tokens/badge.svg)](https://coveralls.io/r/zalando-stups/spring-boot-zalando-stups-tokens)
+[![codecov.io](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens/coverage.svg?branch=master)](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens?branch=master)
 
 ## Spring-Boot STUPS AccessTokens Support
 

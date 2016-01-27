@@ -5,7 +5,7 @@ jdk:
     - oraclejdk7
 
 before_install:
-    - pip install codecov
+    - pip install --user codecov
 
 script:
     - mvn install
