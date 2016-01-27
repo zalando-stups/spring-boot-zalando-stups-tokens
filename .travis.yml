@@ -4,9 +4,12 @@ jdk:
     - oraclejdk8
     - oraclejdk7
 
+before_install:
+    - pip install codecov
+
 script:
     - mvn install
 
 after_success:
-  - mvn coveralls:report -Ptravis
+    - codecov
 

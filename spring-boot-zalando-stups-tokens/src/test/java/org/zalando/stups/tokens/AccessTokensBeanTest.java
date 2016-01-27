@@ -15,26 +15,19 @@
  */
 package org.zalando.stups.tokens;
 
-import static org.zalando.stups.tokens.AccessTokensBean.OAUTH2_ACCESS_TOKENS;
+import org.junit.After;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.powermock.api.mockito.PowerMockito;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.powermock.modules.junit4.PowerMockRunner;
+import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 
 import java.util.Properties;
 
-import org.assertj.core.api.Assertions;
-
-import org.junit.After;
-import org.junit.Test;
-
-import org.junit.runner.RunWith;
-
-import org.mockito.Mockito;
-
-import org.powermock.api.mockito.PowerMockito;
-
-import org.powermock.core.classloader.annotations.PrepareForTest;
-
-import org.powermock.modules.junit4.PowerMockRunner;
-
-import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
+import static org.zalando.stups.tokens.AccessTokensBean.OAUTH2_ACCESS_TOKENS;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({ AccessTokensBean.class, AccessTokensBeanTest.class })
@@ -42,7 +35,7 @@ public class AccessTokensBeanTest {
 
     @After
     public void tearDown() {
-        System.getProperties().remove(OAUTH2_ACCESS_TOKENS);
+        System.clearProperty(OAUTH2_ACCESS_TOKENS);
     }
 
     @Test
@@ -50,7 +43,7 @@ public class AccessTokensBeanTest {
         AccessTokensBeanProperties properties = new AccessTokensBeanProperties();
 
         AccessTokensBean bean = new AccessTokensBean(properties);
-        Assertions.assertThat(bean.isTestingConfigured()).isFalse();
+        assertThat(bean.isTestingConfigured()).isFalse();
     }
 
     @Test
@@ -59,20 +52,20 @@ public class AccessTokensBeanTest {
         properties.setTestTokens("ANY_TEXT");
 
         AccessTokensBean bean = new AccessTokensBean(properties);
-        Assertions.assertThat(bean.isTestingConfigured()).isTrue();
+        assertThat(bean.isTestingConfigured()).isTrue();
     }
 
     @Test
     public void testLocalTestingWhenEnvConfigured() {
         PowerMockito.mockStatic(System.class);
-        Mockito.when(System.getenv(OAUTH2_ACCESS_TOKENS)).thenReturn("ANY_TEXT");
-        Mockito.when(System.getProperties()).thenReturn(new Properties());
+        when(System.getenv(OAUTH2_ACCESS_TOKENS)).thenReturn("ANY_TEXT");
+        when(System.getProperties()).thenReturn(new Properties());
 
         AccessTokensBeanProperties properties = new AccessTokensBeanProperties();
 
         AccessTokensBean bean = new AccessTokensBean(properties);
 
-        Assertions.assertThat(bean.isTestingConfigured()).isTrue();
+        assertThat(bean.isTestingConfigured()).isTrue();
     }
 
     @Test
@@ -83,7 +76,7 @@ public class AccessTokensBeanTest {
         properties.setTestTokens("ANY_TEXT");
 
         AccessTokensBean bean = new AccessTokensBean(properties);
-        Assertions.assertThat(bean.isTestingConfigured()).isTrue();
+        assertThat(bean.isTestingConfigured()).isTrue();
     }
 
 }
