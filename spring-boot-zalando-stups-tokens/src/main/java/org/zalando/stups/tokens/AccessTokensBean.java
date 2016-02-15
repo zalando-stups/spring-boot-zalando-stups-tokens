@@ -134,7 +134,6 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
 
-        // Scheduler
         configureScheduler(builder);
 
         for (TokenConfiguration tc : accessTokensBeanProperties.getTokenConfigurationList()) {
