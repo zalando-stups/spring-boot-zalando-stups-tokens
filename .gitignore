@@ -10,3 +10,6 @@ createDDL.jdbc
 
 pom.xml.versionsBackup
 .factorypath
+
+*.iml
+.idea
