@@ -18,7 +18,6 @@ package org.zalando.stups.tokens;
 import java.io.File;
 import java.util.HashSet;
 
-import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -132,7 +131,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             } catch (NoUniqueBeanDefinitionException e) {
                 taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
             } catch (NoSuchBeanDefinitionException ex) {
-                Log.warn(ex.getMessage(), ex);
+                logger.warn(ex.getMessage(), ex);
             }
             if (taskScheduler != null) {
                 if (taskScheduler instanceof ThreadPoolTaskScheduler) {
