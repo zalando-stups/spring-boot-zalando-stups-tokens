@@ -16,23 +16,27 @@
 package org.zalando.stups.tokens;
 
 import java.io.File;
-
 import java.util.HashSet;
 
+import org.mortbay.log.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.BeanFactory;
+import org.springframework.beans.factory.BeanFactoryAware;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.context.SmartLifecycle;
-
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.StringUtils;
-
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
 
 /**
  * @author  jbellmann
  */
-public class AccessTokensBean implements AccessTokens, SmartLifecycle {
+public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware {
 
     static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
@@ -51,7 +55,6 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
     @Override
     public String get(final Object tokenId) throws AccessTokenUnavailableException {
         try {
-
             return accessTokensDelegate.get(tokenId);
         } catch (AccessTokenUnavailableException e) {
             logger.error("Token unavailable for service : {}", tokenId.toString());
@@ -91,6 +94,13 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
         return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
     }
 
+    private BeanFactory beanFactory;
+
+    @Override
+    public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
+        this.beanFactory = beanFactory;
+    }
+
     @Override
     public synchronized void start() {
         if (isRunning()) {
@@ -113,6 +123,26 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle {
 
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
+
+        // Scheduler
+        if (accessTokensBeanProperties.isUseExistingScheduler()) {
+            TaskScheduler taskScheduler = null;
+            try {
+                taskScheduler = this.beanFactory.getBean(TaskScheduler.class);
+            } catch (NoUniqueBeanDefinitionException e) {
+                taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
+            } catch (NoSuchBeanDefinitionException ex) {
+                Log.warn(ex.getMessage(), ex);
+            }
+            if (taskScheduler != null) {
+                if (taskScheduler instanceof ThreadPoolTaskScheduler) {
+                    logger.info("use 'taskScheduler' from existing application-context");
+                    builder.existingExecutorService(((ThreadPoolTaskScheduler) taskScheduler).getScheduledExecutor());
+                } else {
+                    logger.info("no existing taskScheduler found, use defaults");
+                }
+            }
+        }
 
         for (TokenConfiguration tc : accessTokensBeanProperties.getTokenConfigurationList()) {
             logger.info("configure scopes for service {}", tc.getTokenId());

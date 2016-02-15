@@ -57,6 +57,8 @@ public class AccessTokensBeanProperties {
 
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
+    private boolean useExistingScheduler = true;
+
     public URI getAccessTokenUri() {
         return accessTokenUri;
     }
@@ -148,7 +150,12 @@ public class AccessTokensBeanProperties {
 	public void setEnableMock(boolean enableMock) {
 		this.enableMock = enableMock;
 	}
-	
-	
-	
+
+    public boolean isUseExistingScheduler() {
+        return useExistingScheduler;
+    }
+
+    public void setUseExistingScheduler(boolean useExistingScheduler) {
+        this.useExistingScheduler = useExistingScheduler;
+    }
 }
