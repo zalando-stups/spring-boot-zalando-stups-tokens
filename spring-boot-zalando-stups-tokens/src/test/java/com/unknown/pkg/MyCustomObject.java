@@ -1,5 +1,7 @@
 package com.unknown.pkg;
 
+import com.google.common.base.MoreObjects;
+
 public class MyCustomObject {
 
     private String firstName;
@@ -20,6 +22,11 @@ public class MyCustomObject {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return MoreObjects.toStringHelper(this).add("firstName", firstName).add("lastName", lastName).toString();
     }
 
 }
