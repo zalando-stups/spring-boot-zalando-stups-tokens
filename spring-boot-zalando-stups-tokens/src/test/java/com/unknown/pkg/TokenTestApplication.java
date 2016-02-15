@@ -17,11 +17,17 @@ package com.unknown.pkg;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.scheduling.annotation.Scheduled;
 
 @SpringBootApplication
 public class TokenTestApplication {
 
     public static void main(final String[] args) {
         SpringApplication.run(TokenTestApplication.class, args);
+    }
+
+    @Scheduled(fixedDelay = 5000, initialDelay = 1000)
+    public void scheduledMethod() {
+        System.out.println("SCHEDULED_ACTION");
     }
 }

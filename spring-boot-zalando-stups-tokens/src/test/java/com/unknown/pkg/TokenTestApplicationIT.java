@@ -19,20 +19,14 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
-
 import org.junit.BeforeClass;
 import org.junit.Test;
-
 import org.junit.runner.RunWith;
-
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
-
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokens;
 import org.zalando.stups.tokens.AccessTokensBean;
@@ -66,6 +60,11 @@ public class TokenTestApplicationIT {
     public static void setUp() {
         System.getProperties().remove(OAUTH2_ACCESS_TOKENS);
     }
+
+    // @Test
+    // public void jacksonTest() {
+    // RequestEntity<MyCustomObject> request = RequestEntity.post("")
+    // }
 
     @Test
     public void retrieveToken() throws InterruptedException {

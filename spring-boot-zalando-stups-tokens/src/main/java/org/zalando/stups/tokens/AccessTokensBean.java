@@ -17,6 +17,7 @@ package org.zalando.stups.tokens;
 
 import java.io.File;
 import java.util.HashSet;
+import java.util.concurrent.ScheduledExecutorService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,8 +26,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.StringUtils;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
@@ -35,7 +39,7 @@ import org.zalando.stups.tokens.config.TokenConfiguration;
 /**
  * @author  jbellmann
  */
-public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware {
+public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware, ApplicationContextAware {
 
     static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
@@ -100,6 +104,13 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         this.beanFactory = beanFactory;
     }
 
+    private ApplicationContext acc;
+
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.acc = applicationContext;
+    }
+
     @Override
     public synchronized void start() {
         if (isRunning()) {
@@ -124,24 +135,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
 
         // Scheduler
-        if (accessTokensBeanProperties.isUseExistingScheduler()) {
-            TaskScheduler taskScheduler = null;
-            try {
-                taskScheduler = this.beanFactory.getBean(TaskScheduler.class);
-            } catch (NoUniqueBeanDefinitionException e) {
-                taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
-            } catch (NoSuchBeanDefinitionException ex) {
-                logger.warn(ex.getMessage(), ex);
-            }
-            if (taskScheduler != null) {
-                if (taskScheduler instanceof ThreadPoolTaskScheduler) {
-                    logger.info("use 'taskScheduler' from existing application-context");
-                    builder.existingExecutorService(((ThreadPoolTaskScheduler) taskScheduler).getScheduledExecutor());
-                } else {
-                    logger.info("no existing taskScheduler found, use defaults");
-                }
-            }
-        }
+        configureScheduler(builder);
 
         for (TokenConfiguration tc : accessTokensBeanProperties.getTokenConfigurationList()) {
             logger.info("configure scopes for service {}", tc.getTokenId());
@@ -155,6 +149,32 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         running = true;
         logger.info("'accessTokenRefresher' started.");
         logger.info("'accessTokensBean' started.");
+    }
+
+
+    protected void configureScheduler(AccessTokensBuilder builder) {
+        if (accessTokensBeanProperties.isUseExistingScheduler()) {
+            TaskScheduler taskScheduler = null;
+            try {
+                taskScheduler = this.beanFactory.getBean(TaskScheduler.class);
+            } catch (NoUniqueBeanDefinitionException e) {
+                taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
+            } catch (NoSuchBeanDefinitionException ex) {
+                logger.warn(ex.getMessage(), ex);
+            }
+            if (taskScheduler != null) {
+                if (taskScheduler instanceof ThreadPoolTaskScheduler) {
+                    logger.info("use 'taskScheduler' from existing application-context");
+                    builder.existingExecutorService(((ThreadPoolTaskScheduler) taskScheduler).getScheduledExecutor());
+                } else if (taskScheduler instanceof ConcurrentTaskScheduler) {
+                    logger.info("use 'taskScheduler' from existing application-context");
+                    builder.existingExecutorService((ScheduledExecutorService) ((ConcurrentTaskScheduler) taskScheduler)
+                            .getConcurrentExecutor());
+                } else {
+                    logger.info("no existing taskScheduler found, use defaults");
+                }
+            }
+        }
     }
 
     protected final boolean isTestingConfigured() {

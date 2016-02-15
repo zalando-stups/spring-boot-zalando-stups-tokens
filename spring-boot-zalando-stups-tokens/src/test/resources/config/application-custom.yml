@@ -1,5 +1,10 @@
 server:
     port: 9191
+    
+spring:
+  jackson:
+    property-naming-strategy: CAMEL_CASE_TO_LOWER_CASE_WITH_UNDERSCORES
+
 #
 #
 tokens:
@@ -8,6 +13,7 @@ tokens:
     refreshPercentLeft: 30
     warnPercentLeft: 10
     autoStartup: true
+    start-after-creation: false
 
     token-configuration-list:
         - tokenId: firstService
