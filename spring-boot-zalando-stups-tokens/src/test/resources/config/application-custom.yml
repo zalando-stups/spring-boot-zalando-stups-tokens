@@ -14,6 +14,7 @@ tokens:
     warnPercentLeft: 10
     autoStartup: true
     start-after-creation: false
+    use-existing-scheduler: false
 
     token-configuration-list:
         - tokenId: firstService

@@ -8,6 +8,7 @@ tokens:
     refreshPercentLeft: 30
     warnPercentLeft: 10
     phase: 10
+    use-existing-scheduler: false
 
     # these will be used during execution
     testTokens: firstService=12345,secondService=56789

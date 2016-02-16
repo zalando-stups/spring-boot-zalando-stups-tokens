@@ -16,7 +16,9 @@
 package org.zalando.stups.tokens;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
 import org.slf4j.Logger;
@@ -26,12 +28,11 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
@@ -39,7 +40,7 @@ import org.zalando.stups.tokens.config.TokenConfiguration;
 /**
  * @author  jbellmann
  */
-public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware, ApplicationContextAware {
+public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware {
 
     static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
@@ -50,6 +51,8 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
     private final AccessTokensBeanProperties accessTokensBeanProperties;
 
     private volatile boolean running = false;
+
+    private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
     public AccessTokensBean(final AccessTokensBeanProperties accessTokensBeanProperties) {
         this.accessTokensBeanProperties = accessTokensBeanProperties;
@@ -104,11 +107,9 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         this.beanFactory = beanFactory;
     }
 
-    private ApplicationContext acc;
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-        this.acc = applicationContext;
+    public void setMetricsListeners(List<MetricsListener> metricsListeners) {
+        Assert.notNull(metricsListeners, "metricsListeners-list should never be null");
+        this.metricsListeners = metricsListeners;
     }
 
     @Override
@@ -133,6 +134,10 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
 
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
+
+        if (!metricsListeners.isEmpty()) {
+            builder.metricsListener(new CompositeMetricsListener(metricsListeners));
+        }
 
         configureScheduler(builder);
 

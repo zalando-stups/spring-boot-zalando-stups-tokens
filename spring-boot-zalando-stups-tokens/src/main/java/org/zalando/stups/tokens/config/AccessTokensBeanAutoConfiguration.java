@@ -16,7 +16,9 @@
 package org.zalando.stups.tokens.config;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +33,7 @@ import org.zalando.stups.tokens.AccessTokens;
 import org.zalando.stups.tokens.AccessTokensBean;
 import org.zalando.stups.tokens.ClientCredentialsProvider;
 import org.zalando.stups.tokens.JsonFileBackedClientCredentialsProvider;
+import org.zalando.stups.tokens.MetricsListener;
 
 /**
  * @author jbellmann
@@ -44,6 +47,9 @@ public class AccessTokensBeanAutoConfiguration {
 	@Autowired
 	private AccessTokensBeanProperties accessTokensBeanProperties;
 
+    @Autowired(required = false)
+    private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
+
 	@Bean
 	public AccessTokensBean accessTokensBean() {
 		if(accessTokensBeanProperties.isEnableMock()){
@@ -52,6 +58,7 @@ public class AccessTokensBeanAutoConfiguration {
 
 		//
 		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
+        bean.setMetricsListeners(metricsListeners);
 		if (accessTokensBeanProperties.isStartAfterCreation()) {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
 			bean.start();
