@@ -19,6 +19,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +34,8 @@ import org.zalando.stups.tokens.AccessTokensBean;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
 
+import com.codahale.metrics.ConsoleReporter;
+import com.codahale.metrics.MetricRegistry;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 
@@ -56,9 +59,19 @@ public class TokenTestApplicationIT {
     @Autowired
     private AccessTokens accessTokens;
 
+    @Autowired
+    private MetricRegistry metricRegistry;
+
     @BeforeClass
     public static void setUp() {
         System.getProperties().remove(OAUTH2_ACCESS_TOKENS);
+    }
+
+    @Before
+    public void localSetup() {
+        ConsoleReporter reporter = ConsoleReporter.forRegistry(metricRegistry).convertRatesTo(TimeUnit.SECONDS)
+                .convertDurationsTo(TimeUnit.MILLISECONDS).build();
+        reporter.start(2, TimeUnit.SECONDS);
     }
 
     // @Test
@@ -102,6 +115,8 @@ public class TokenTestApplicationIT {
         TimeUnit.SECONDS.sleep(2);
         testing();
 
+        // to see some metrics from console-reporter
+        TimeUnit.SECONDS.sleep(10);
         System.out.println("KILL");
     }
 
