@@ -18,11 +18,12 @@ package org.zalando.stups.tokens.config;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
- * @author  jbellmann
+ * @author jbellmann
  */
 @ConfigurationProperties(prefix = "tokens")
 public class AccessTokensBeanProperties {
@@ -48,16 +49,23 @@ public class AccessTokensBeanProperties {
     private boolean autoStartup = true;
 
     private int phase = 0;
-    
+
     private boolean exposeClientCredentialProvider = false;
-    
+
     private boolean startAfterCreation = false;
-    
+
     private boolean enableMock = false;
 
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
     private boolean useExistingScheduler = true;
+
+    private CircuitBreakerConfiguration tokenRefresherCircuitBreaker = new CircuitBreakerConfiguration();
+
+    private CircuitBreakerConfiguration tokenVerifierCircuitBreaker = new CircuitBreakerConfiguration(3, 10, 3,
+            TimeUnit.MINUTES);
+
+    private URI tokenInfoUri;
 
     public URI getAccessTokenUri() {
         return accessTokenUri;
@@ -127,29 +135,29 @@ public class AccessTokensBeanProperties {
         this.phase = phase;
     }
 
-	public boolean isExposeClientCredentialProvider() {
-		return exposeClientCredentialProvider;
-	}
+    public boolean isExposeClientCredentialProvider() {
+        return exposeClientCredentialProvider;
+    }
 
-	public void setExposeClientCredentialProvider(boolean exposeClientCredentialProvider) {
-		this.exposeClientCredentialProvider = exposeClientCredentialProvider;
-	}
+    public void setExposeClientCredentialProvider(boolean exposeClientCredentialProvider) {
+        this.exposeClientCredentialProvider = exposeClientCredentialProvider;
+    }
 
-	public boolean isStartAfterCreation() {
-		return startAfterCreation;
-	}
+    public boolean isStartAfterCreation() {
+        return startAfterCreation;
+    }
 
-	public void setStartAfterCreation(boolean startAfterCreation) {
-		this.startAfterCreation = startAfterCreation;
-	}
+    public void setStartAfterCreation(boolean startAfterCreation) {
+        this.startAfterCreation = startAfterCreation;
+    }
 
-	public boolean isEnableMock() {
-		return enableMock;
-	}
+    public boolean isEnableMock() {
+        return enableMock;
+    }
 
-	public void setEnableMock(boolean enableMock) {
-		this.enableMock = enableMock;
-	}
+    public void setEnableMock(boolean enableMock) {
+        this.enableMock = enableMock;
+    }
 
     public boolean isUseExistingScheduler() {
         return useExistingScheduler;
@@ -158,4 +166,29 @@ public class AccessTokensBeanProperties {
     public void setUseExistingScheduler(boolean useExistingScheduler) {
         this.useExistingScheduler = useExistingScheduler;
     }
+
+    public CircuitBreakerConfiguration getTokenRefresherCircuitBreaker() {
+        return tokenRefresherCircuitBreaker;
+    }
+
+    public void setTokenRefresherCircuitBreaker(CircuitBreakerConfiguration tokenRefresherCircuitBreaker) {
+        this.tokenRefresherCircuitBreaker = tokenRefresherCircuitBreaker;
+    }
+
+    public CircuitBreakerConfiguration getTokenVerifierCircuitBreaker() {
+        return tokenVerifierCircuitBreaker;
+    }
+
+    public void setTokenVerifierCircuitBreaker(CircuitBreakerConfiguration tokenVerifierCircuitBreaker) {
+        this.tokenVerifierCircuitBreaker = tokenVerifierCircuitBreaker;
+    }
+
+    public URI getTokenInfoUri() {
+        return tokenInfoUri;
+    }
+
+    public void setTokenInfoUri(URI tokenInfoUri) {
+        this.tokenInfoUri = tokenInfoUri;
+    }
+
 }

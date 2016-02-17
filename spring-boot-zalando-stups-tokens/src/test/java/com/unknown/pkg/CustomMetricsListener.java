@@ -23,7 +23,7 @@ public class CustomMetricsListener implements MetricsListener {
     @Override
     @Async // optional, but recommended
     public void submitToTimer(String key, long time) {
-        log.warn("CUSTOM_METRICSLISTENER : {} needs {}ms", key, time);
+        log.warn("CUSTOM_METRICSLISTENER : {} needs {} ms", key, time);
     }
 
 }

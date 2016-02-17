@@ -24,3 +24,14 @@ tokens:
               - refole:all
         - tokenId: secondService
           scopes: singleScope:all
+
+    token-refresher-circuit-breaker:
+      error-threshold: 4
+      max-multi: 35
+      timeout: 15
+      time-unit: seconds
+    token-verifier-circuit-breaker:
+      error-threshold: 3
+      max-multi: 4
+      timeout: 15
+      time-unit: minutes

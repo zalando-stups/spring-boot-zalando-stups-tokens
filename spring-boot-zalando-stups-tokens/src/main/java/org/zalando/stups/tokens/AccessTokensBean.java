@@ -35,7 +35,9 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
+import org.zalando.stups.tokens.config.CircuitBreakerConfiguration;
 import org.zalando.stups.tokens.config.TokenConfiguration;
+import org.zalando.stups.tokens.mcb.MCBConfig;
 
 /**
  * @author  jbellmann
@@ -135,6 +137,14 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         builder.usingClientCredentialsProvider(getClientCredentialsProvider());
         builder.usingUserCredentialsProvider(getUserCredentialsProvider());
 
+        if (accessTokensBeanProperties.getTokenInfoUri() != null) {
+            builder.tokenInfoUri(accessTokensBeanProperties.getTokenInfoUri());
+        }
+
+        configureTokenRefresherCircuitBreaker(builder);
+
+        configureTokenVerifierCircuitBreaker(builder);
+
         if (!metricsListeners.isEmpty()) {
             builder.metricsListener(new CompositeMetricsListener(metricsListeners));
         }
@@ -155,6 +165,19 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         logger.info("'accessTokensBean' started.");
     }
 
+    protected void configureTokenRefresherCircuitBreaker(AccessTokensBuilder builder) {
+        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getTokenRefresherCircuitBreaker();
+        MCBConfig config = new MCBConfig.Builder().withErrorThreshold(cbc.getErrorThreshold())
+                .withTimeout(cbc.getTimeout()).withMaxMulti(cbc.getMaxMulti()).withTimeUnit(cbc.getTimeUnit()).build();
+        builder.tokenRefresherMcbConfig(config);
+    }
+
+    protected void configureTokenVerifierCircuitBreaker(AccessTokensBuilder builder) {
+        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getTokenVerifierCircuitBreaker();
+        MCBConfig config = new MCBConfig.Builder().withErrorThreshold(cbc.getErrorThreshold())
+                .withTimeout(cbc.getTimeout()).withMaxMulti(cbc.getMaxMulti()).withTimeUnit(cbc.getTimeUnit()).build();
+        builder.tokenVerifierMcbConfig(config);
+    }
 
     protected void configureScheduler(AccessTokensBuilder builder) {
         if (accessTokensBeanProperties.isUseExistingScheduler()) {
