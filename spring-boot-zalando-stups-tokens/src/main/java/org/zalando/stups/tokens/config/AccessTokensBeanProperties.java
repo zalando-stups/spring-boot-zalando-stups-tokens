@@ -67,6 +67,14 @@ public class AccessTokensBeanProperties {
 
     private URI tokenInfoUri;
 
+    private int schedulingPeriod = 5;
+
+    private TimeUnit schedulingTimeUnit = TimeUnit.SECONDS;
+
+    private int tokenVerifierSchedulingPeriod = 5;
+
+    private TimeUnit tokenVerifierSchedulingTimeUnit = TimeUnit.MINUTES;
+
     public URI getAccessTokenUri() {
         return accessTokenUri;
     }
@@ -189,6 +197,38 @@ public class AccessTokensBeanProperties {
 
     public void setTokenInfoUri(URI tokenInfoUri) {
         this.tokenInfoUri = tokenInfoUri;
+    }
+
+    public int getTokenVerifierSchedulingPeriod() {
+        return tokenVerifierSchedulingPeriod;
+    }
+
+    public void setTokenVerifierSchedulingPeriod(int tokenVerifierSchedulingPeriod) {
+        this.tokenVerifierSchedulingPeriod = tokenVerifierSchedulingPeriod;
+    }
+
+    public int getSchedulingPeriod() {
+        return schedulingPeriod;
+    }
+
+    public void setSchedulingPeriod(int schedulingPeriod) {
+        this.schedulingPeriod = schedulingPeriod;
+    }
+
+    public TimeUnit getSchedulingTimeUnit() {
+        return schedulingTimeUnit;
+    }
+
+    public void setSchedulingTimeUnit(TimeUnit schedulingTimeUnit) {
+        this.schedulingTimeUnit = schedulingTimeUnit;
+    }
+
+    public TimeUnit getTokenVerifierSchedulingTimeUnit() {
+        return tokenVerifierSchedulingTimeUnit;
+    }
+
+    public void setTokenVerifierSchedulingTimeUnit(TimeUnit tokenVerifierSchedulingTimeUnit) {
+        this.tokenVerifierSchedulingTimeUnit = tokenVerifierSchedulingTimeUnit;
     }
 
 }

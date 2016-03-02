@@ -158,6 +158,18 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             configuration.addScopes(new HashSet<Object>(tc.getScopes()));
         }
 
+        // percentages
+        builder.refreshPercentLeft(accessTokensBeanProperties.getRefreshPercentLeft());
+        builder.warnPercentLeft(accessTokensBeanProperties.getWarnPercentLeft());
+
+        // scheduling
+        builder.schedulingPeriod(accessTokensBeanProperties.getSchedulingPeriod());
+        builder.schedulingTimeUnit(accessTokensBeanProperties.getSchedulingTimeUnit());
+
+        // tokenVerifier
+        builder.tokenVerifierSchedulingPeriod(accessTokensBeanProperties.getTokenVerifierSchedulingPeriod());
+        builder.tokenVerifierSchedulingTimeUnit(accessTokensBeanProperties.getTokenVerifierSchedulingTimeUnit());
+
         logger.info("Start 'accessTokenRefresher' ...");
         accessTokensDelegate = builder.start();
         running = true;
@@ -187,7 +199,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             } catch (NoUniqueBeanDefinitionException e) {
                 taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
             } catch (NoSuchBeanDefinitionException ex) {
-                logger.warn(ex.getMessage(), ex);
+                logger.warn("'useExistingScheduler' was configured to 'true', but we did not find any bean.");
             }
             if (taskScheduler != null) {
                 if (taskScheduler instanceof ThreadPoolTaskScheduler) {
