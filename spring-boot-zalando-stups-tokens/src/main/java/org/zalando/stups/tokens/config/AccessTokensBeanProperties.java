@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.util.StringUtils;
 
 /**
  * @author jbellmann
@@ -28,17 +29,21 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @ConfigurationProperties(prefix = "tokens")
 public class AccessTokensBeanProperties {
 
+    private static final String OAUTH2_ACCESS_TOKEN_URL = "OAUTH2_ACCESS_TOKEN_URL";
+
+    private static final String CREDENTIALS_DIR = "CREDENTIALS_DIR";
+
     private static final String CLIENT_JSON = "client.json";
 
     private static final String USER_JSON = "user.json";
 
-    private URI accessTokenUri;
+    private URI accessTokenUri = initializeAccessTokenUrlFromEnvironment();
 
     private int refreshPercentLeft = 40;
 
     private int warnPercentLeft = 20;
 
-    private String credentialsDirectory;
+    private String credentialsDirectory = getFromEnvOrNull(CREDENTIALS_DIR);
 
     private String userCredentialsFilename = USER_JSON;
 
@@ -74,6 +79,30 @@ public class AccessTokensBeanProperties {
     private int verifierSchedulingPeriod = 5;
 
     private TimeUnit verifierSchedulingTimeUnit = TimeUnit.MINUTES;
+
+    private static String getFromEnvOrNull(String property) {
+        String value = System.getenv(property);
+        if (org.springframework.util.StringUtils.hasText(value)) {
+            return value;
+        } else {
+            return null;
+        }
+    }
+
+    private static URI initializeAccessTokenUrlFromEnvironment() {
+        String value = getFromEnvOrNull(OAUTH2_ACCESS_TOKEN_URL);
+        if (value == null) {
+            return null;
+        } else if (StringUtils.hasText(value)) {
+            try {
+                return URI.create(value);
+            } catch (Exception e) {
+                return null;
+            }
+        } else {
+            return null;
+        }
+    }
 
     public URI getAccessTokenUri() {
         return accessTokenUri;
