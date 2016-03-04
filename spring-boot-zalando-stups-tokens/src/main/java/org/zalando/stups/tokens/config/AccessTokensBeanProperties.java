@@ -60,20 +60,20 @@ public class AccessTokensBeanProperties {
 
     private boolean useExistingScheduler = true;
 
-    private CircuitBreakerConfiguration tokenRefresherCircuitBreaker = new CircuitBreakerConfiguration();
+    private CircuitBreakerConfiguration refresherCircuitBreaker = new CircuitBreakerConfiguration("MCB-Refresher");
 
-    private CircuitBreakerConfiguration tokenVerifierCircuitBreaker = new CircuitBreakerConfiguration(3, 10, 3,
-            TimeUnit.MINUTES);
+    private CircuitBreakerConfiguration verifierCircuitBreaker = new CircuitBreakerConfiguration(3, 10, 3,
+            TimeUnit.MINUTES, "MCB-Verifier");
 
     private URI tokenInfoUri;
 
-    private int schedulingPeriod = 5;
+    private int refresherSchedulingPeriod = 5;
 
-    private TimeUnit schedulingTimeUnit = TimeUnit.SECONDS;
+    private TimeUnit refresherSchedulingTimeUnit = TimeUnit.SECONDS;
 
-    private int tokenVerifierSchedulingPeriod = 5;
+    private int verifierSchedulingPeriod = 5;
 
-    private TimeUnit tokenVerifierSchedulingTimeUnit = TimeUnit.MINUTES;
+    private TimeUnit verifierSchedulingTimeUnit = TimeUnit.MINUTES;
 
     public URI getAccessTokenUri() {
         return accessTokenUri;
@@ -175,20 +175,20 @@ public class AccessTokensBeanProperties {
         this.useExistingScheduler = useExistingScheduler;
     }
 
-    public CircuitBreakerConfiguration getTokenRefresherCircuitBreaker() {
-        return tokenRefresherCircuitBreaker;
+    public CircuitBreakerConfiguration getRefresherCircuitBreaker() {
+        return refresherCircuitBreaker;
     }
 
-    public void setTokenRefresherCircuitBreaker(CircuitBreakerConfiguration tokenRefresherCircuitBreaker) {
-        this.tokenRefresherCircuitBreaker = tokenRefresherCircuitBreaker;
+    public void setRefresherCircuitBreaker(CircuitBreakerConfiguration refresherCircuitBreaker) {
+        this.refresherCircuitBreaker = refresherCircuitBreaker;
     }
 
-    public CircuitBreakerConfiguration getTokenVerifierCircuitBreaker() {
-        return tokenVerifierCircuitBreaker;
+    public CircuitBreakerConfiguration getVerifierCircuitBreaker() {
+        return verifierCircuitBreaker;
     }
 
-    public void setTokenVerifierCircuitBreaker(CircuitBreakerConfiguration tokenVerifierCircuitBreaker) {
-        this.tokenVerifierCircuitBreaker = tokenVerifierCircuitBreaker;
+    public void setVerifierCircuitBreaker(CircuitBreakerConfiguration verifierCircuitBreaker) {
+        this.verifierCircuitBreaker = verifierCircuitBreaker;
     }
 
     public URI getTokenInfoUri() {
@@ -199,36 +199,36 @@ public class AccessTokensBeanProperties {
         this.tokenInfoUri = tokenInfoUri;
     }
 
-    public int getTokenVerifierSchedulingPeriod() {
-        return tokenVerifierSchedulingPeriod;
+    public int getVerifierSchedulingPeriod() {
+        return verifierSchedulingPeriod;
     }
 
-    public void setTokenVerifierSchedulingPeriod(int tokenVerifierSchedulingPeriod) {
-        this.tokenVerifierSchedulingPeriod = tokenVerifierSchedulingPeriod;
+    public void setVerifierSchedulingPeriod(int tokenVerifierSchedulingPeriod) {
+        this.verifierSchedulingPeriod = tokenVerifierSchedulingPeriod;
     }
 
-    public int getSchedulingPeriod() {
-        return schedulingPeriod;
+    public int getRefresherSchedulingPeriod() {
+        return refresherSchedulingPeriod;
     }
 
-    public void setSchedulingPeriod(int schedulingPeriod) {
-        this.schedulingPeriod = schedulingPeriod;
+    public void setRefresherSchedulingPeriod(int schedulingPeriod) {
+        this.refresherSchedulingPeriod = schedulingPeriod;
     }
 
-    public TimeUnit getSchedulingTimeUnit() {
-        return schedulingTimeUnit;
+    public TimeUnit getRefresherSchedulingTimeUnit() {
+        return refresherSchedulingTimeUnit;
     }
 
-    public void setSchedulingTimeUnit(TimeUnit schedulingTimeUnit) {
-        this.schedulingTimeUnit = schedulingTimeUnit;
+    public void setRefresherSchedulingTimeUnit(TimeUnit schedulingTimeUnit) {
+        this.refresherSchedulingTimeUnit = schedulingTimeUnit;
     }
 
-    public TimeUnit getTokenVerifierSchedulingTimeUnit() {
-        return tokenVerifierSchedulingTimeUnit;
+    public TimeUnit getVerifierSchedulingTimeUnit() {
+        return verifierSchedulingTimeUnit;
     }
 
-    public void setTokenVerifierSchedulingTimeUnit(TimeUnit tokenVerifierSchedulingTimeUnit) {
-        this.tokenVerifierSchedulingTimeUnit = tokenVerifierSchedulingTimeUnit;
+    public void setVerifierSchedulingTimeUnit(TimeUnit tokenVerifierSchedulingTimeUnit) {
+        this.verifierSchedulingTimeUnit = tokenVerifierSchedulingTimeUnit;
     }
 
 }

@@ -163,12 +163,12 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         builder.warnPercentLeft(accessTokensBeanProperties.getWarnPercentLeft());
 
         // scheduling
-        builder.schedulingPeriod(accessTokensBeanProperties.getSchedulingPeriod());
-        builder.schedulingTimeUnit(accessTokensBeanProperties.getSchedulingTimeUnit());
+        builder.schedulingPeriod(accessTokensBeanProperties.getRefresherSchedulingPeriod());
+        builder.schedulingTimeUnit(accessTokensBeanProperties.getRefresherSchedulingTimeUnit());
 
         // tokenVerifier
-        builder.tokenVerifierSchedulingPeriod(accessTokensBeanProperties.getTokenVerifierSchedulingPeriod());
-        builder.tokenVerifierSchedulingTimeUnit(accessTokensBeanProperties.getTokenVerifierSchedulingTimeUnit());
+        builder.tokenVerifierSchedulingPeriod(accessTokensBeanProperties.getVerifierSchedulingPeriod());
+        builder.tokenVerifierSchedulingTimeUnit(accessTokensBeanProperties.getVerifierSchedulingTimeUnit());
 
         logger.info("Start 'accessTokenRefresher' ...");
         accessTokensDelegate = builder.start();
@@ -177,19 +177,36 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         logger.info("'accessTokensBean' started.");
     }
 
+    // @formatter:off
     protected void configureTokenRefresherCircuitBreaker(AccessTokensBuilder builder) {
-        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getTokenRefresherCircuitBreaker();
-        MCBConfig config = new MCBConfig.Builder().withErrorThreshold(cbc.getErrorThreshold())
-                .withTimeout(cbc.getTimeout()).withMaxMulti(cbc.getMaxMulti()).withTimeUnit(cbc.getTimeUnit()).build();
-        builder.tokenRefresherMcbConfig(config);
+        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getRefresherCircuitBreaker();
+
+        MCBConfig.Builder configBuilder = new MCBConfig.Builder()
+                                        .withErrorThreshold(cbc.getErrorThreshold())
+                                        .withTimeout(cbc.getTimeout())
+                                        .withMaxMulti(cbc.getMaxMulti())
+                                        .withTimeUnit(cbc.getTimeUnit());
+        
+                                        if(StringUtils.hasText(cbc.getName())){
+                                            configBuilder = configBuilder.withName(cbc.getName());
+                                        }
+        builder.tokenRefresherMcbConfig(configBuilder.build());
     }
 
     protected void configureTokenVerifierCircuitBreaker(AccessTokensBuilder builder) {
-        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getTokenVerifierCircuitBreaker();
-        MCBConfig config = new MCBConfig.Builder().withErrorThreshold(cbc.getErrorThreshold())
-                .withTimeout(cbc.getTimeout()).withMaxMulti(cbc.getMaxMulti()).withTimeUnit(cbc.getTimeUnit()).build();
-        builder.tokenVerifierMcbConfig(config);
+        CircuitBreakerConfiguration cbc = accessTokensBeanProperties.getVerifierCircuitBreaker();
+
+        MCBConfig.Builder configBuilder = new MCBConfig.Builder()
+                                            .withErrorThreshold(cbc.getErrorThreshold())
+                                            .withTimeout(cbc.getTimeout())
+                                            .withMaxMulti(cbc.getMaxMulti())
+                                            .withTimeUnit(cbc.getTimeUnit());
+                                            if(StringUtils.hasText(cbc.getName())){
+                                                configBuilder = configBuilder.withName(cbc.getName());
+                                            }
+        builder.tokenVerifierMcbConfig(configBuilder.build());
     }
+    // @formatter:on
 
     protected void configureScheduler(AccessTokensBuilder builder) {
         if (accessTokensBeanProperties.isUseExistingScheduler()) {
