@@ -23,8 +23,14 @@ import java.util.List;
  */
 public class TokenConfiguration {
 
+    /**
+     * Identifier for this configuration.
+     */
     private String tokenId;
 
+    /**
+     * Scopes to be requested for this service.
+     */
     private List<String> scopes = new ArrayList<String>(0);
 
     public String getTokenId() {

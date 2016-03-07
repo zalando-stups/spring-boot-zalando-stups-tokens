@@ -21,7 +21,12 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.context.SmartLifecycle;
+import org.springframework.scheduling.SchedulingTaskExecutor;
 import org.springframework.util.StringUtils;
+import org.zalando.stups.tokens.AccessToken;
+import org.zalando.stups.tokens.AccessTokensBean;
+import org.zalando.stups.tokens.ClientCredentialsProvider;
 
 /**
  * @author jbellmann
@@ -37,47 +42,148 @@ public class AccessTokensBeanProperties {
 
     private static final String USER_JSON = "user.json";
 
+    /**
+     * The url to the access-token-endpoint.<br/>
+     * e.g. https://auth.example.com/oauth2/access_token?realm=/yourrealm
+     */
     private URI accessTokenUri = initializeAccessTokenUrlFromEnvironment();
 
+    /**
+     * Percentage when an {@link AccessToken} will be refreshed if possible.
+     */
     private int refreshPercentLeft = 40;
 
+    /**
+     * Percentage when WARN-messages will be logged if an {@link AccessToken}
+     * couldn't refreshed for any reason so far.
+     */
     private int warnPercentLeft = 20;
 
+    /**
+     * Path to directory where credentials can be found (e.g. client.json,
+     * user.json).
+     */
     private String credentialsDirectory = getFromEnvOrNull(CREDENTIALS_DIR);
 
+    /**
+     * Filename for user-credentials.
+     * 
+     * Defaults to : user.json
+     */
     private String userCredentialsFilename = USER_JSON;
 
+    /**
+     * Filename for client-credentials.
+     * 
+     * Defaults to : client.json
+     */
     private String clientCredentialsFilename = CLIENT_JSON;
 
+    /**
+     * To provide 'token' for test-cases.
+     * 
+     * Defaults to : null
+     */
     private String testTokens = null;
 
+    /**
+     * Is 'auto-startup' enabled.
+     * 
+     * Defaults to : true
+     * 
+     * @see SmartLifecycle
+     */
     private boolean autoStartup = true;
 
+    /**
+     * In which 'phase' should the bean started.
+     * 
+     * Defaults to : 0
+     * 
+     * @see SmartLifecycle
+     */
     private int phase = 0;
 
+    /**
+     * If the {@link ClientCredentialsProvider} should be exposed as bean set
+     * this property to 'true'.
+     * 
+     * Defaults to : false
+     */
     private boolean exposeClientCredentialProvider = false;
 
+    /**
+     * If the {@link AccessTokensBean} should be started immediately after
+     * creation, set this property to 'true'.
+     * 
+     * Defaults to : false
+     */
     private boolean startAfterCreation = false;
 
+    /**
+     * If a mock of {@link AccessTokensBean} is needed set this property to
+     * 'true'. Maybe for testing-cases.
+     * 
+     * Defaults to : false
+     */
     private boolean enableMock = false;
 
+    /**
+     * List of {@link TokenConfiguration}s.
+     */
     private List<TokenConfiguration> tokenConfigurationList = new ArrayList<TokenConfiguration>(0);
 
+    /**
+     * Provide an existing {@link SchedulingTaskExecutor} to use in the
+     * refresher.
+     */
     private boolean useExistingScheduler = true;
 
+    /**
+     * Configuration for Circuit-Breaker of refresher.
+     */
     private CircuitBreakerConfiguration refresherCircuitBreaker = new CircuitBreakerConfiguration("MCB-Refresher");
 
+    /**
+     * Configuration for Circuit-Breaker of verifier.
+     */
     private CircuitBreakerConfiguration verifierCircuitBreaker = new CircuitBreakerConfiguration(3, 10, 3,
             TimeUnit.MINUTES, "MCB-Verifier");
 
+    /**
+     * The url for the token-info-endpoint (e.g.
+     * http://auth.example.com/oauth2/tokeninfo)
+     * 
+     * Defaults to : 'TOKENINFO_URL' environment variable
+     */
     private URI tokenInfoUri;
 
+    /**
+     * Scheduling period for the refresher.
+     * 
+     * Defaults to : 5
+     */
     private int refresherSchedulingPeriod = 5;
 
+    /**
+     * {@link TimeUnit} for the scheduling period of the refresher.
+     * 
+     * Defaults. to : {@link TimeUnit#SECONDS}
+     */
     private TimeUnit refresherSchedulingTimeUnit = TimeUnit.SECONDS;
 
+    /**
+     * Scheduling period for the verifier.
+     * 
+     * Defaults to : 5
+     */
     private int verifierSchedulingPeriod = 5;
 
+    /**
+     * {@link TimeUnit} for the scheduling period of the verifier.
+     * 
+     * Defaults to : {@link TimeUnit#MINUTES}
+     */
     private TimeUnit verifierSchedulingTimeUnit = TimeUnit.MINUTES;
 
     private static String getFromEnvOrNull(String property) {

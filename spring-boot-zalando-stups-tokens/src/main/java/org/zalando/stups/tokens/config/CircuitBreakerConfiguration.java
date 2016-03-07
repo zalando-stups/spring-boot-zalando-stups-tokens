@@ -2,16 +2,37 @@ package org.zalando.stups.tokens.config;
 
 import java.util.concurrent.TimeUnit;
 
+/**
+ * Circuit-Breaker Configuration used for refresher and verifier.
+ * 
+ * @author jbellmann
+ *
+ */
 public class CircuitBreakerConfiguration {
 
+    /**
+     * Threshold when the CB should switch to OPEN.
+     */
     private int errorThreshold = 5;
 
+    /**
+     * Timeout-period for the CB.
+     */
     private int timeout = 30;
 
+    /**
+     * Maximum factor for timeout-period of the CB.
+     */
     private int maxMulti = 40;
 
+    /**
+     * {@link TimeUnit} for the timeout-period.
+     */
     private TimeUnit timeUnit = TimeUnit.SECONDS;
 
+    /**
+     * Name of the CB.
+     */
     private String name;
 
     public CircuitBreakerConfiguration() {
