@@ -22,6 +22,7 @@ import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -51,13 +52,14 @@ public class AccessTokensBeanAutoConfiguration {
     private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
 	@Bean
-	public AccessTokensBean accessTokensBean() {
+    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
 		if(accessTokensBeanProperties.isEnableMock()){
 			return new MockAccessTokensBean(accessTokensBeanProperties);
 		}
 
 		//
 		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
+        bean.setBeanFactory(beanFactory);
         bean.setMetricsListeners(metricsListeners);
 		if (accessTokensBeanProperties.isStartAfterCreation()) {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
