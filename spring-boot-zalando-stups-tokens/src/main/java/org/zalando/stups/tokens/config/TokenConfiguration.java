@@ -29,6 +29,11 @@ public class TokenConfiguration {
     private String tokenId;
 
     /**
+     * Expose this config as prepared bean.
+     */
+    private boolean exposeAsBean = true;
+
+    /**
      * Scopes to be requested for this service.
      */
     private List<String> scopes = new ArrayList<String>(0);
@@ -47,6 +52,14 @@ public class TokenConfiguration {
 
     public void setScopes(final List<String> scopes) {
         this.scopes = scopes;
+    }
+
+    public boolean isExposeAsBean() {
+        return exposeAsBean;
+    }
+
+    public void setExposeAsBean(boolean exposeAsBean) {
+        this.exposeAsBean = exposeAsBean;
     }
 
 }

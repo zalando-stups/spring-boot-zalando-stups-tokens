@@ -24,10 +24,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.client.RestOperations;
+import org.zalando.stups.oauth2.spring.client.StupsOAuth2RestTemplate;
+import org.zalando.stups.oauth2.spring.client.StupsTokensAccessTokenProvider;
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokenUnavailableException;
 import org.zalando.stups.tokens.AccessTokens;
@@ -65,8 +69,23 @@ public class AccessTokensBeanAutoConfiguration {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
 			bean.start();
 		}
+
+        List<TokenConfiguration> tokenConfigurationList = accessTokensBeanProperties.getTokenConfigurationList();
+        for (TokenConfiguration tc : tokenConfigurationList) {
+            if (tc.isExposeAsBean()) {
+                logger.info("register an instance of 'RestOperations' with name '{}' ...", tc.getTokenId());
+                RestOperations ro = buildOAuth2RestTemplate(tc.getTokenId(), bean);
+                ((ConfigurableBeanFactory) beanFactory).registerSingleton(tc.getTokenId(), ro);
+                logger.info("registered an instance of 'RestOperations' with name '{}'", tc.getTokenId());
+            }
+        }
+
 		return bean;
 	}
+
+    private RestOperations buildOAuth2RestTemplate(final String tokenName, AccessTokens accessTokens) {
+        return new StupsOAuth2RestTemplate(new StupsTokensAccessTokenProvider(tokenName, accessTokens));
+    }
 
 	@Bean
 	@ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
