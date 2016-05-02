@@ -3,7 +3,7 @@
   <parent>
     <groupId>org.zalando.stups</groupId>
     <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
-    <version>0.9.11-SNAPSHOT</version>
+    <version>0.9.11.M2</version>
   </parent>
   <artifactId>examples</artifactId>
   <packaging>pom</packaging>
