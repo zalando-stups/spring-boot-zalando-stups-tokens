@@ -24,14 +24,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.client.RestOperations;
-import org.zalando.stups.oauth2.spring.client.StupsOAuth2RestTemplate;
-import org.zalando.stups.oauth2.spring.client.StupsTokensAccessTokenProvider;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokenUnavailableException;
 import org.zalando.stups.tokens.AccessTokens;
@@ -45,6 +44,8 @@ import org.zalando.stups.tokens.MetricsListener;
  */
 @Configuration
 @EnableConfigurationProperties({ AccessTokensBeanProperties.class })
+@Import(TokenSupportRegistrar.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AccessTokensBeanAutoConfiguration {
 
 	private final Logger logger = LoggerFactory.getLogger(AccessTokensBeanAutoConfiguration.class);
@@ -55,7 +56,7 @@ public class AccessTokensBeanAutoConfiguration {
     @Autowired(required = false)
     private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
-	@Bean
+    @Bean(name = "accessTokensBean")
     public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
 		if(accessTokensBeanProperties.isEnableMock()){
 			return new MockAccessTokensBean(accessTokensBeanProperties);
@@ -70,22 +71,8 @@ public class AccessTokensBeanAutoConfiguration {
 			bean.start();
 		}
 
-        List<TokenConfiguration> tokenConfigurationList = accessTokensBeanProperties.getTokenConfigurationList();
-        for (TokenConfiguration tc : tokenConfigurationList) {
-            if (tc.isExposeAsBean()) {
-                logger.info("register an instance of 'RestOperations' with name '{}' ...", tc.getTokenId());
-                RestOperations ro = buildOAuth2RestTemplate(tc.getTokenId(), bean);
-                ((ConfigurableBeanFactory) beanFactory).registerSingleton(tc.getTokenId(), ro);
-                logger.info("registered an instance of 'RestOperations' with name '{}'", tc.getTokenId());
-            }
-        }
-
 		return bean;
 	}
-
-    private RestOperations buildOAuth2RestTemplate(final String tokenName, AccessTokens accessTokens) {
-        return new StupsOAuth2RestTemplate(new StupsTokensAccessTokenProvider(tokenName, accessTokens));
-    }
 
 	@Bean
 	@ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
