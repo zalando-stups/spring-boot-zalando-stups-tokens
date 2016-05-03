@@ -1,6 +1,7 @@
 tokens:
     access-token-uri: https://auth.example.com/oauth2/access_token?realm=/yourrealm
     token-info-uri: https://auth.example.com/oauth2/tokeninfo
+    enable-mock: true
     token-configuration-list:
         - tokenId: producer
           scopes:
@@ -8,3 +9,7 @@ tokens:
               - producer.event_stream.read
         - tokenId: nakadi
           scopes: nakadi.event_stream.write
+
+security:
+  basic:
+    enabled: false
