@@ -1,8 +1,11 @@
 package org.zalando.stups.tokens.config;
 
+import static org.springframework.beans.factory.support.BeanDefinitionBuilder.genericBeanDefinition;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.FatalBeanException;
+import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.support.BeanDefinitionBuilder;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.bind.PropertiesConfigurationFactory;
@@ -38,20 +41,26 @@ public class TokenSupportRegistrar implements ImportBeanDefinitionRegistrar, Env
         for (TokenConfiguration tc : props.getTokenConfigurationList()) {
 
             final String providerBeanName = tc.getTokenId() + ACCESS_TOKEN_PROVIDER;
-            // AccessTokenProvider
-            BeanDefinitionBuilder builder = BeanDefinitionBuilder
-                    .rootBeanDefinition(StupsTokensAccessTokenProvider.class);
-            builder.addConstructorArgValue(tc.getTokenId());
-            builder.addConstructorArgReference(ACCESS_TOKENS_BEAN);
-            registry.registerBeanDefinition(providerBeanName, builder.getBeanDefinition());
 
-            // RestOperations
-            BeanDefinitionBuilder templateBuilder = BeanDefinitionBuilder
-                    .rootBeanDefinition(StupsOAuth2RestTemplate.class);
-            templateBuilder.addConstructorArgReference(providerBeanName);
-            registry.registerBeanDefinition(tc.getTokenId(), templateBuilder.getBeanDefinition());
+            registry.registerBeanDefinition(providerBeanName, buildAccessTokenProvider(tc.getTokenId()));
+
+            registry.registerBeanDefinition(tc.getTokenId(), buildRestOperations(providerBeanName));
+
             logger.debug("register 'beanDefinition' for {}", tc.getTokenId());
         }
+    }
+
+    private BeanDefinition buildAccessTokenProvider(String tokenId) {
+        BeanDefinitionBuilder builder = genericBeanDefinition(StupsTokensAccessTokenProvider.class);
+        builder.addConstructorArgValue(tokenId);
+        builder.addConstructorArgReference(ACCESS_TOKENS_BEAN);
+        return builder.getBeanDefinition();
+    }
+
+    private BeanDefinition buildRestOperations(String providerBeanName) {
+        BeanDefinitionBuilder templateBuilder = genericBeanDefinition(StupsOAuth2RestTemplate.class);
+        templateBuilder.addConstructorArgReference(providerBeanName);
+        return templateBuilder.getBeanDefinition();
     }
 
     @Override
