@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.client.RestOperations;
+import org.springframework.web.client.RestTemplate;
 import org.zalando.stups.tokens.annotation.OAuth2RestOperations;
 import org.zalando.stups.tokens.annotation.OAuth2RestOperationsAutowired;
 
@@ -17,6 +18,9 @@ public class RestConfig {
 
     @OAuth2RestOperationsAutowired(PRODUCER_TOKEN_NAME)
     private RestOperations template;
+
+    @OAuth2RestOperationsAutowired(PRODUCER_TOKEN_NAME)
+    private RestTemplate template2;
 
     @Bean
     public UseProducerRestOperation userProducerRestOperation(

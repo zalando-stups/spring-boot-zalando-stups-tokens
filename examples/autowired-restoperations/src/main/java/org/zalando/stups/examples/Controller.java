@@ -21,6 +21,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.AsyncRestTemplate;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.databind.JsonNode;
+
 /**
  * Just to show that ResponseEntity<String> will not result in escaped json.
  * 
@@ -86,5 +88,18 @@ public class Controller {
                 String.class);
 
         writer.write(wireMockResponse.getBody());
+    }
+
+    @RequestMapping("/fifthTest")
+    public ListenableFuture<ResponseEntity<JsonNode>> getFifth() {
+        log.warn("CONTROLLER F INVOKED ... ");
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONNECTION, "close"); // to avoid Premature end
+                                                      // of file
+        HttpEntity<?> entity = new HttpEntity<>(headers);
+
+        return asyncRestTemplate.exchange(URI.create("http://localhost:9998/listenableNotJson"), HttpMethod.GET, entity,
+                JsonNode.class);
     }
 }

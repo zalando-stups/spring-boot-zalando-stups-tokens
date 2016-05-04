@@ -5,6 +5,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.util.concurrent.TimeUnit;
 
 import org.apache.http.HttpResponse;
@@ -22,12 +23,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.junit4.rules.SpringClassRule;
 import org.springframework.test.context.junit4.rules.SpringMethodRule;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import org.zalando.stups.examples.config.UseProducerRestOperation;
@@ -55,10 +59,22 @@ public class RunApplicationTest {
     private int port;
 
     @Before
-    public void setUp() {
+    public void setUp() throws IOException {
         wireMockRule.stubFor(get(urlPathEqualTo("/listenable"))
                 .willReturn(aResponse().withStatus(200).withBody("{\"key\":\"value\"}")
                         .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
+
+        wireMockRule.stubFor(get(urlPathEqualTo("/listenableNotJson"))
+                .willReturn(aResponse().withStatus(200).withBody(resourceToString(jsonResource("/notJson")))
+                        .withHeader(HttpHeaders.CONTENT_TYPE, MediaType.APPLICATION_JSON_VALUE)));
+    }
+
+    protected Resource jsonResource(String filename) {
+        return new ClassPathResource(filename + ".json", getClass());
+    }
+
+    public static String resourceToString(Resource resource) throws IOException {
+        return StreamUtils.copyToString(resource.getInputStream(), Charset.defaultCharset());
     }
 
     @Test
@@ -106,6 +122,16 @@ public class RunApplicationTest {
             e.printStackTrace();
         } catch (IOException e) {
             // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            HttpResponse response6 = client
+                    .execute(RequestBuilder.get("http://localhost:" + port + "/fifthTest").build());
+            System.out.println("BODY-6" + EntityUtils.toString(response6.getEntity()));
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
