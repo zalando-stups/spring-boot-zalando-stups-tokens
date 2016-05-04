@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,11 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.boot.test.WebIntegrationTest;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.web.client.RestOperations;
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokens;
 import org.zalando.stups.tokens.AccessTokensBean;
+import org.zalando.stups.tokens.annotation.OAuth2RestOperationsAutowired;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
 import org.zalando.stups.tokens.config.TokenConfiguration;
 
@@ -42,6 +45,7 @@ import com.google.common.collect.Iterables;
 /**
  * @author  jbellmann
  */
+@Ignore
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = {TokenTestApplication.class})
 @WebIntegrationTest(randomPort = false)
@@ -62,6 +66,11 @@ public class TokenTestApplicationIT {
     @Autowired
     private MetricRegistry metricRegistry;
 
+    // @Autowired
+    // @OAuth2RestOperations("firstService")
+    @OAuth2RestOperationsAutowired("firstService")
+    private RestOperations firstServiceRestOperations;
+
     @BeforeClass
     public static void setUp() {
         System.getProperties().remove(OAUTH2_ACCESS_TOKENS);
@@ -73,11 +82,6 @@ public class TokenTestApplicationIT {
                 .convertDurationsTo(TimeUnit.MILLISECONDS).build();
         reporter.start(2, TimeUnit.SECONDS);
     }
-
-    // @Test
-    // public void jacksonTest() {
-    // RequestEntity<MyCustomObject> request = RequestEntity.post("")
-    // }
 
     @Test
     public void retrieveToken() throws InterruptedException {

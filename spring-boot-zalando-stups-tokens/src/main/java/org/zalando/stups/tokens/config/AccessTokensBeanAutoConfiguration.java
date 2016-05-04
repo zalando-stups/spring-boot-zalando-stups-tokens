@@ -28,6 +28,9 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
+import org.springframework.core.Ordered;
+import org.springframework.core.annotation.Order;
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokenUnavailableException;
 import org.zalando.stups.tokens.AccessTokens;
@@ -41,6 +44,8 @@ import org.zalando.stups.tokens.MetricsListener;
  */
 @Configuration
 @EnableConfigurationProperties({ AccessTokensBeanProperties.class })
+@Import(TokenSupportRegistrar.class)
+@Order(Ordered.HIGHEST_PRECEDENCE)
 public class AccessTokensBeanAutoConfiguration {
 
 	private final Logger logger = LoggerFactory.getLogger(AccessTokensBeanAutoConfiguration.class);
@@ -51,7 +56,7 @@ public class AccessTokensBeanAutoConfiguration {
     @Autowired(required = false)
     private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
-	@Bean
+    @Bean(name = "accessTokensBean")
     public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
 		if(accessTokensBeanProperties.isEnableMock()){
 			return new MockAccessTokensBean(accessTokensBeanProperties);
@@ -65,6 +70,7 @@ public class AccessTokensBeanAutoConfiguration {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
 			bean.start();
 		}
+
 		return bean;
 	}
 
