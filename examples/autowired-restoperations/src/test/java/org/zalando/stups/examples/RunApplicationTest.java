@@ -4,8 +4,15 @@ import static com.github.tomakehurst.wiremock.client.WireMock.aResponse;
 import static com.github.tomakehurst.wiremock.client.WireMock.get;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathEqualTo;
 
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.RequestBuilder;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.ClassRule;
@@ -25,6 +32,7 @@ import org.springframework.web.client.RestOperations;
 import org.springframework.web.client.RestTemplate;
 import org.zalando.stups.examples.config.UseProducerRestOperation;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.github.tomakehurst.wiremock.junit.WireMockRule;
 
 @SpringApplicationConfiguration(classes = ExampleApp.class)
@@ -77,8 +85,8 @@ public class RunApplicationTest {
         System.out.println("BODDYYY-2 ::: " + response2.getBody());
 
         RestTemplate restTemplate3 = new RestTemplate();
-        ResponseEntity<String> response3 = restTemplate3.getForEntity("http://localhost:" + port + "/thirdTest",
-                String.class);
+        ResponseEntity<JsonNode> response3 = restTemplate3.getForEntity("http://localhost:" + port + "/thirdTest",
+                JsonNode.class);
         Assertions.assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK);
         System.out.println("BODDYYY-3 ::: " + response3.getBody());
 
@@ -87,6 +95,19 @@ public class RunApplicationTest {
                 String.class);
         Assertions.assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.OK);
         System.out.println("BODDYYY-4 ::: " + response4.getBody());
+
+        HttpClient client = HttpClientBuilder.create().build();
+        try {
+            HttpResponse response5 = client
+                    .execute(RequestBuilder.get("http://localhost:" + port + "/thirdTest").build());
+            System.out.println("BODY-5" + EntityUtils.toString(response5.getEntity()));
+        } catch (ClientProtocolException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
 
         TimeUnit.SECONDS.sleep(5);
     }
