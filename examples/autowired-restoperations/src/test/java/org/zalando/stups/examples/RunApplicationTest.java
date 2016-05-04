@@ -82,6 +82,12 @@ public class RunApplicationTest {
         Assertions.assertThat(response3.getStatusCode()).isEqualTo(HttpStatus.OK);
         System.out.println("BODDYYY-3 ::: " + response3.getBody());
 
+        RestTemplate restTemplate4 = new RestTemplate();
+        ResponseEntity<String> response4 = restTemplate4.getForEntity("http://localhost:" + port + "/fourthTest",
+                String.class);
+        Assertions.assertThat(response4.getStatusCode()).isEqualTo(HttpStatus.OK);
+        System.out.println("BODDYYY-4 ::: " + response4.getBody());
+
         TimeUnit.SECONDS.sleep(5);
     }
 

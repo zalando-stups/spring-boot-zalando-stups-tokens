@@ -1,6 +1,7 @@
 package org.zalando.stups.examples;
 
 import java.io.IOException;
+import java.io.Writer;
 import java.net.URI;
 import java.util.concurrent.Callable;
 
@@ -74,5 +75,16 @@ public class Controller {
 
         return asyncRestTemplate.exchange(URI.create("http://localhost:9998/listenable"), HttpMethod.GET, entity,
                 String.class);
+    }
+
+    @RequestMapping("/fourthTest")
+    public void getFourth(Writer writer) throws IOException {
+        log.warn("CONTROLLER FOURTH_TEST INVOKED ... ");
+
+        RestTemplate wireMockRestTemplate = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+        ResponseEntity<String> wireMockResponse = wireMockRestTemplate.getForEntity("http://localhost:9998/listenable",
+                String.class);
+
+        writer.write(wireMockResponse.getBody());
     }
 }
