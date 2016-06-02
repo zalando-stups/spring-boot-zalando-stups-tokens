@@ -48,19 +48,19 @@ public class AccessTokensBeanAutoConfiguration {
 	@Autowired
 	private AccessTokensBeanProperties accessTokensBeanProperties;
 
-    @Autowired(required = false)
-    private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
+	@Autowired(required = false)
+	private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
 	@Bean
-    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
-		if(accessTokensBeanProperties.isEnableMock()){
+	public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
+		if (accessTokensBeanProperties.isEnableMock()) {
 			return new MockAccessTokensBean(accessTokensBeanProperties);
 		}
 
 		//
 		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
-        bean.setBeanFactory(beanFactory);
-        bean.setMetricsListeners(metricsListeners);
+		bean.setBeanFactory(beanFactory);
+		bean.setMetricsListeners(metricsListeners);
 		if (accessTokensBeanProperties.isStartAfterCreation()) {
 			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
 			bean.start();
@@ -78,47 +78,45 @@ public class AccessTokensBeanAutoConfiguration {
 	protected File getCredentialsFile(final String credentialsFilename) {
 		return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
 	}
-	
+
 	static class MockAccessTokensBean extends AccessTokensBean {
-		
+
 		private final Logger logger = LoggerFactory.getLogger(MockAccessTokensBean.class);
-		
+
 		private static final String BEARER = "BEARER";
 		private static final String INVALID = "INVALID";
 		private final Date validUnti = new Date();
 
 		public MockAccessTokensBean(AccessTokensBeanProperties accessTokensBeanProperties) {
 			super(accessTokensBeanProperties);
-		}
-
-		@Override
-		public synchronized void start() {
 			logger.warn("USING MOCK_ACCESS_TOKENS_BEAN, OAUTH WILL NOT WORK !!!");
 			accessTokensDelegate = new AccessTokens() {
-				
+
 				@Override
 				public void stop() {
 				}
-				
+
 				@Override
 				public void invalidate(Object tokenId) {
-					
+
 				}
-				
+
 				@Override
 				public AccessToken getAccessToken(Object tokenId) throws AccessTokenUnavailableException {
 					return new AccessToken(INVALID, BEARER, -1, validUnti);
 				}
-				
+
 				@Override
 				public String get(Object tokenId) throws AccessTokenUnavailableException {
 					return INVALID;
 				}
 			};
 		}
-		
-		
-		
+
+		@Override
+		public synchronized void start() {
+		}
+
 	}
 
 }
