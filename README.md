@@ -2,6 +2,9 @@
 ![Maven Central](https://img.shields.io/maven-central/v/org.zalando.stups/spring-boot-zalando-stups-tokens.svg)
 [![codecov.io](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens/coverage.svg?branch=master)](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens?branch=master)
 
+
+[![Try Initializer](https://img.shields.io/badge/assemble%20your%20spring--boot--app%20with-Zalando%20OSS%20Initializr-orange.svg)](https://initializr.machinery.zalan.do)
+
 ## Spring-Boot STUPS AccessTokens Support
 
 Is a small wrapper around [Tokens](https://github.com/zalando-stups/tokens) with lifecycle-management and autoconfiguration-support in Spring-Boot applications.
