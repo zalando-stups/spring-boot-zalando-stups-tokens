@@ -29,9 +29,6 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ConcurrentTaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
@@ -40,7 +37,7 @@ import org.zalando.stups.tokens.config.TokenConfiguration;
 import org.zalando.stups.tokens.mcb.MCBConfig;
 
 /**
- * @author  jbellmann
+ * @author jbellmann
  */
 public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware {
 
@@ -88,14 +85,14 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
 
     protected UserCredentialsProvider getUserCredentialsProvider() {
 
-        return new JsonFileBackedUserCredentialsProvider(getCredentialsFile(
-                    accessTokensBeanProperties.getUserCredentialsFilename()));
+        return new JsonFileBackedUserCredentialsProvider(
+                getCredentialsFile(accessTokensBeanProperties.getUserCredentialsFilename()));
     }
 
     protected ClientCredentialsProvider getClientCredentialsProvider() {
 
-        return new JsonFileBackedClientCredentialsProvider(getCredentialsFile(
-                    accessTokensBeanProperties.getClientCredentialsFilename()));
+        return new JsonFileBackedClientCredentialsProvider(
+                getCredentialsFile(accessTokensBeanProperties.getClientCredentialsFilename()));
     }
 
     protected File getCredentialsFile(final String credentialsFilename) {
@@ -119,7 +116,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         if (isRunning()) {
             return;
         }
-        
+
         logger.info("starting 'accessTokensBean' ...");
 
         AccessTokensBuilder builder = null;
@@ -210,25 +207,15 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
 
     protected void configureScheduler(AccessTokensBuilder builder) {
         if (accessTokensBeanProperties.isUseExistingScheduler()) {
-            TaskScheduler taskScheduler = null;
+            ScheduledExecutorService scheduledExecutorService = null;
             try {
-                taskScheduler = this.beanFactory.getBean(TaskScheduler.class);
+                scheduledExecutorService = this.beanFactory.getBean(ScheduledExecutorService.class);
+                builder.existingExecutorService(scheduledExecutorService);
             } catch (NoUniqueBeanDefinitionException e) {
-                taskScheduler = this.beanFactory.getBean("taskScheduler", TaskScheduler.class);
+                scheduledExecutorService = this.beanFactory.getBean("scheduledExecutorService", ScheduledExecutorService.class);
+                builder.existingExecutorService(scheduledExecutorService);
             } catch (NoSuchBeanDefinitionException ex) {
                 logger.warn("'useExistingScheduler' was configured to 'true', but we did not find any bean.");
-            }
-            if (taskScheduler != null) {
-                if (taskScheduler instanceof ThreadPoolTaskScheduler) {
-                    logger.info("use 'taskScheduler' from existing application-context");
-                    builder.existingExecutorService(((ThreadPoolTaskScheduler) taskScheduler).getScheduledExecutor());
-                } else if (taskScheduler instanceof ConcurrentTaskScheduler) {
-                    logger.info("use 'taskScheduler' from existing application-context");
-                    builder.existingExecutorService((ScheduledExecutorService) ((ConcurrentTaskScheduler) taskScheduler)
-                            .getConcurrentExecutor());
-                } else {
-                    logger.info("no existing taskScheduler found, use defaults");
-                }
             }
         }
     }
@@ -238,7 +225,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
                 && StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
 
             logger.warn(
-                "'Test-Tokens' configured in yaml-file as also in ENV-VARIABLE 'OAUTH2_ACCESS_TOKENS' ! CONFIGURE ONLY ONE!");
+                    "'Test-Tokens' configured in yaml-file as also in ENV-VARIABLE 'OAUTH2_ACCESS_TOKENS' ! CONFIGURE ONLY ONE!");
 
             return true;
 
