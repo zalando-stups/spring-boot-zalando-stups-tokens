@@ -2,8 +2,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.zalando.stups</groupId>
-        <artifactId>spring-boot-zalando-stups-tokens-parent</artifactId>
-        <version>0.9.12-SNAPSHOT</version>
+        <artifactId>tokens-spring-boot-starter-parent</artifactId>
+        <version>0.10.0-SNAPSHOT</version>
     </parent>
     <artifactId>issues</artifactId>
     <packaging>pom</packaging>
