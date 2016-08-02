@@ -1,5 +1,5 @@
 [![Build Status](https://travis-ci.org/zalando-stups/spring-boot-zalando-stups-tokens.svg?branch=master)](https://travis-ci.org/zalando-stups/spring-boot-zalando-stups-tokens) 
-![Maven Central](https://img.shields.io/maven-central/v/org.zalando.stups/spring-boot-zalando-stups-tokens.svg)
+![Maven Central](https://img.shields.io/maven-central/v/org.zalando.stups/tokens-spring-boot-starter.svg)
 [![codecov.io](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens/coverage.svg?branch=master)](https://codecov.io/github/zalando-stups/spring-boot-zalando-stups-tokens?branch=master)
 
 
@@ -20,7 +20,7 @@ Add the following to your pom.xml when using maven.
 
     <dependency>
         <groupId>org.zalando.stups</groupId>
-        <artifactId>spring-boot-zalando-stups-tokens</artifactId>
+        <artifactId>tokens-spring-boot-starter</artifactId>
         <version>${version}</version>
     </dependency>
 
