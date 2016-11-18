@@ -38,6 +38,6 @@ public class MockAccessTokensBeanTest {
 	@Test
 	public void testMockAccessTokensBean(){
 		String value = accessTokens.get("anyId");
-		Assertions.assertThat(value).isEqualTo("INVALID");
+		Assertions.assertThat(value).isEqualTo("MOCK_ENABLED_TOKEN");
 	}
 }
