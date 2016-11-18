@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,80 +44,88 @@ import org.zalando.stups.tokens.MetricsListener;
 @EnableConfigurationProperties({ AccessTokensBeanProperties.class })
 public class AccessTokensBeanAutoConfiguration {
 
-	private final Logger logger = LoggerFactory.getLogger(AccessTokensBeanAutoConfiguration.class);
+    private final Logger logger = LoggerFactory.getLogger(AccessTokensBeanAutoConfiguration.class);
 
-	@Autowired
-	private AccessTokensBeanProperties accessTokensBeanProperties;
+    @Autowired
+    private AccessTokensBeanProperties accessTokensBeanProperties;
 
-	@Autowired(required = false)
-	private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
+    @Autowired(required = false)
+    private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
-	@Bean
-	public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
-		if (accessTokensBeanProperties.isEnableMock()) {
-			return new MockAccessTokensBean(accessTokensBeanProperties);
-		}
+    @Bean
+    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
+        if (accessTokensBeanProperties.isEnableMock()) {
+            return new MockAccessTokensBean(accessTokensBeanProperties);
+        }
 
-		//
-		AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
-		bean.setBeanFactory(beanFactory);
-		bean.setMetricsListeners(metricsListeners);
-		if (accessTokensBeanProperties.isStartAfterCreation()) {
-			logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
-			bean.start();
-		}
-		return bean;
-	}
+        //
+        AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
+        bean.setBeanFactory(beanFactory);
+        bean.setMetricsListeners(metricsListeners);
+        if (accessTokensBeanProperties.isStartAfterCreation()) {
+            logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
+            bean.start();
+        }
+        return bean;
+    }
 
-	@Bean
-	@ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
-	public ClientCredentialsProvider clientCredentialsProvider() {
-		return new JsonFileBackedClientCredentialsProvider(
-				getCredentialsFile(accessTokensBeanProperties.getClientCredentialsFilename()));
-	}
+    @Bean
+    @ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
+    public ClientCredentialsProvider clientCredentialsProvider() {
+        return new JsonFileBackedClientCredentialsProvider(
+                getCredentialsFile(accessTokensBeanProperties.getClientCredentialsFilename()));
+    }
 
-	protected File getCredentialsFile(final String credentialsFilename) {
-		return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
-	}
+    protected File getCredentialsFile(final String credentialsFilename) {
+        return new File(accessTokensBeanProperties.getCredentialsDirectory(), credentialsFilename);
+    }
 
-	static class MockAccessTokensBean extends AccessTokensBean {
+    static class MockAccessTokensBean extends AccessTokensBean {
 
-		private final Logger logger = LoggerFactory.getLogger(MockAccessTokensBean.class);
+        private final Logger logger = LoggerFactory.getLogger(MockAccessTokensBean.class);
 
-		private static final String BEARER = "BEARER";
-		private static final String INVALID = "INVALID";
-		private final Date validUnti = new Date();
+        private static final String BEARER = "BEARER";
+        private static final String MOCK_ENABLED_TOKEN = "MOCK_ENABLED_TOKEN";
 
-		public MockAccessTokensBean(AccessTokensBeanProperties accessTokensBeanProperties) {
-			super(accessTokensBeanProperties);
-			logger.warn("USING MOCK_ACCESS_TOKENS_BEAN, OAUTH WILL NOT WORK !!!");
-			accessTokensDelegate = new AccessTokens() {
+        public MockAccessTokensBean(AccessTokensBeanProperties accessTokensBeanProperties) {
+            super(accessTokensBeanProperties);
+            accessTokensDelegate = new AccessTokens() {
 
-				@Override
-				public void stop() {
-				}
+                @Override
+                public void stop() {
+                }
 
-				@Override
-				public void invalidate(Object tokenId) {
+                @Override
+                public void invalidate(Object tokenId) {
 
-				}
+                }
 
-				@Override
-				public AccessToken getAccessToken(Object tokenId) throws AccessTokenUnavailableException {
-					return new AccessToken(INVALID, BEARER, -1, validUnti);
-				}
+                @Override
+                public AccessToken getAccessToken(Object tokenId) throws AccessTokenUnavailableException {
+                    return new AccessToken(get("IGNORE"), BEARER, -1, validUntil());
+                }
 
-				@Override
-				public String get(Object tokenId) throws AccessTokenUnavailableException {
-					return INVALID;
-				}
-			};
-		}
+                @Override
+                public String get(Object tokenId) throws AccessTokenUnavailableException {
+                    if (isTestingConfigured()) {
+                        return getFixedToken();
+                    } else {
+                        return MOCK_ENABLED_TOKEN;
+                    }
+                }
 
-		@Override
-		public synchronized void start() {
-		}
+                private Date validUntil() {
+                    final long expiresInSeconds = TimeUnit.DAYS.toSeconds(2);
+                    return new Date(System.currentTimeMillis() + (expiresInSeconds * 1000));
+                }
+            };
+        }
 
-	}
+        @Override
+        public synchronized void start() {
+            logger.info("USING MOCK_ACCESS_TOKENS_BEAN, OAUTH WILL NOT WORK !!!");
+        }
+
+    }
 
 }
