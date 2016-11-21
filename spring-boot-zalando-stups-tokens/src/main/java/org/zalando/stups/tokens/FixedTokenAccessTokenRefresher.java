@@ -15,10 +15,15 @@
  */
 package org.zalando.stups.tokens;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
- * @author  jbellmann
+ * @author jbellmann
  */
 class FixedTokenAccessTokenRefresher extends AccessTokenRefresher {
+
+    private final Logger logger = LoggerFactory.getLogger(FixedTokenAccessTokenRefresher.class);
 
     private final String fixedToken;
 
@@ -29,7 +34,19 @@ class FixedTokenAccessTokenRefresher extends AccessTokenRefresher {
 
     @Override
     protected String getFixedToken() {
-        return fixedToken;
+        String fromEnv = super.getFixedToken();
+        if (fromEnv == null || fromEnv.trim().isEmpty()) {
+            return this.fixedToken;
+        } else {
+            return fromEnv;
+        }
+    }
+
+    @Override
+    void start() {
+        initializeFixedTokensFromEnvironment();
+        logger.info(getClass().getSimpleName() + " started");
+        // do not start any scheduler, only initialize fixed tokens
     }
 
 }

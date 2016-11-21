@@ -18,7 +18,7 @@ package org.zalando.stups.tokens;
 import java.net.URI;
 
 /**
- * @author  jbellmann
+ * @author jbellmann
  */
 class FixedTokenAccessTokenBuilder extends AccessTokensBuilder {
 
@@ -32,6 +32,13 @@ class FixedTokenAccessTokenBuilder extends AccessTokensBuilder {
     @Override
     protected AccessTokenRefresher getAccessTokenRefresher() {
         return new FixedTokenAccessTokenRefresher(this, fixedToken);
+    }
+
+    @Override
+    public AccessTokens start() {
+        final AccessTokenRefresher refresher = getAccessTokenRefresher();
+        refresher.start();
+        return refresher;
     }
 
 }
