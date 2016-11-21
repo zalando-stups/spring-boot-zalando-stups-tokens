@@ -212,7 +212,8 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
                 scheduledExecutorService = this.beanFactory.getBean(ScheduledExecutorService.class);
                 builder.existingExecutorService(scheduledExecutorService);
             } catch (NoUniqueBeanDefinitionException e) {
-                scheduledExecutorService = this.beanFactory.getBean("scheduledExecutorService", ScheduledExecutorService.class);
+                scheduledExecutorService = this.beanFactory.getBean("scheduledExecutorService",
+                        ScheduledExecutorService.class);
                 builder.existingExecutorService(scheduledExecutorService);
             } catch (NoSuchBeanDefinitionException ex) {
                 logger.warn("'useExistingScheduler' was configured to 'true', but we did not find any bean.");
@@ -234,6 +235,8 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             return true;
         } else if (StringUtils.hasText(accessTokensBeanProperties.getTestTokens())) {
 
+            return true;
+        } else if (StringUtils.hasText(System.getProperty(OAUTH2_ACCESS_TOKENS))) {
             return true;
         }
 

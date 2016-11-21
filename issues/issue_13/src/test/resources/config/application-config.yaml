@@ -1,0 +1,8 @@
+#
+#
+#
+tokens:
+  access-token-uri: http://example.com
+  enable-mock: false
+  start-after-creation: true
+  test-tokens: uid=98765,service-a=12345

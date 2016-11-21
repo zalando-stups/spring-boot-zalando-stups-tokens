@@ -9,6 +9,7 @@
     <packaging>pom</packaging>
     <modules>
         <module>issues_5</module>
+        <module>issue_13</module>
     </modules>
     <build>
         <plugins>
