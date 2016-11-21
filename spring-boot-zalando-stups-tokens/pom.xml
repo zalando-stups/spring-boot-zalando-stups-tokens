@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.zalando.stups</groupId>
         <artifactId>tokens-spring-boot-starter-parent</artifactId>
-        <version>0.10.1-SNAPSHOT</version>
+        <version>0.10.1-GH-13</version>
     </parent>
     <artifactId>tokens-spring-boot-starter</artifactId>
     <description>OAuth2-Tokens Library - Spring-Boot-Starter</description>
