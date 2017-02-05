@@ -6,7 +6,7 @@
         <version>6</version>
         <relativePath />
     </parent>
-    <version>0.1.0</version>
+    <version>0.1.1-SNAPSHOT</version>
     <artifactId>tokens-k8s-spring-boot-starter</artifactId>
     <inceptionYear>2017</inceptionYear>
 
@@ -154,7 +154,7 @@
         <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
         <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
         <developerConnection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
-        <tag>tokens-k8s-spring-boot-starter-0.1.0</tag>
+        <tag>HEAD</tag>
     </scm>
 
     <licenses>
