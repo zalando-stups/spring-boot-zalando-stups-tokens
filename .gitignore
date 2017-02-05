@@ -13,3 +13,5 @@ pom.xml.versionsBackup
 
 *.iml
 .idea
+
+dependency-reduced-pom.xml
