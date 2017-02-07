@@ -15,6 +15,9 @@
  */
 package org.zalando.secrets.spring;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
@@ -26,8 +29,23 @@ public class SecretsProperties {
     private static final String DEFAULT_CREDENTIALS_DIRECTORY = "/meta/credentials";
 
     /**
-     * Directory where credentials/tokenfiles will be mounted.
+     * Directory where credentials/token files will be mounted.
      */
     private String credentialsDirectory = DEFAULT_CREDENTIALS_DIRECTORY;
+
+    /**
+     * Indicates that listed 'clients' are mandatory.
+     */
+    private List<String> requiredClients = new ArrayList<>(0);
+
+    /**
+     * Indicates that listed 'tokens' are mandatory.
+     */
+    private List<String> requiredTokens = new ArrayList<>(0);
+
+    /**
+     * Enable/Disable configuration. Default is 'enabled=true'.
+     */
+    private boolean enabled = true;
 
 }

@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -94,6 +95,13 @@ public class AccessTokensBean implements AccessTokens, Authorizations {
         accessTokens.keySet().stream().forEach(at -> {
             log.info("registered token : {}", at);
         });
+        List<String> requiredTokensNotFound = secretsProperties.getRequiredTokens()
+                                                                .stream()
+                                                                .filter((token) -> !accessTokens.keySet().contains(token))
+                                                                .collect(toList());
+        if (requiredTokensNotFound.size() > 0) {
+            throw new RequiredTokensNotFoundException(requiredTokensNotFound);
+        }
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 5_000)
@@ -110,7 +118,6 @@ public class AccessTokensBean implements AccessTokens, Authorizations {
                 .filter(Objects::nonNull)
                 .collect(toList())
                 .forEach(token -> {
-                    log.debug("register token : {}", token.getIdentfier());
                     accessTokens.put(token.getIdentfier(),token);
                 });
     }

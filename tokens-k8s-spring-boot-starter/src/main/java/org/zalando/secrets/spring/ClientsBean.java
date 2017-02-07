@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FilenameFilter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,6 +68,13 @@ public class ClientsBean implements Clients {
         clients.keySet().stream().forEach(c -> {
             log.info("registered client : {}", c);
         });
+        List<String> requiredClientsNotFound = secretsProperties.getRequiredClients()
+                                                                .stream()
+                                                                .filter((client) -> !clients.keySet().contains(client))
+                                                                .collect(toList());
+        if (requiredClientsNotFound.size() > 0) {
+            throw new RequiredClientsNotFoundException(requiredClientsNotFound);
+        }
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 5_000)
@@ -83,7 +91,6 @@ public class ClientsBean implements Clients {
                 .filter(Objects::nonNull)
                 .collect(toList())
                 .forEach(c -> {
-                    log.debug("register client : {}", c.getName());
                     clients.put(c.getName(), c);
                 });
     }

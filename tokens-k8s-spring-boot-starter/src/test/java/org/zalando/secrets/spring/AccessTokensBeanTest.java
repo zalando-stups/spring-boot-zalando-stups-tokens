@@ -54,4 +54,14 @@ public class AccessTokensBeanTest {
         Authorization auth = ((Authorizations) ab).get("full-access");
         log.info("Authorization: {}", auth.getHeaderValue());
     }
+
+    @Test(expected = RequiredTokensNotFoundException.class)
+    public void readAuthorizationsWithRequiredMissing() {
+        SecretsProperties props = new SecretsProperties();
+        props.getRequiredTokens().add("Not-Existent-Token");
+        props.setCredentialsDirectory(
+                "/Users/jbellmann/dev/work/zalando/ghcom/spring-boot-zalando-stups-tokens/tokens-k8s-spring-boot-starter/credentials");
+        AccessTokensBean ab = new AccessTokensBean(props);
+        ab.initialize();
+    }
 }

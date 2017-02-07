@@ -25,7 +25,7 @@ import org.zalando.secrets.Clients;
 public class ClientsBeanTest {
 
     @Test
-    public void testClientsBean() throws InterruptedException {
+    public void testClientsBean() {
         SecretsProperties props = new SecretsProperties();
         props.setCredentialsDirectory(
                 "/Users/jbellmann/dev/work/zalando/ghcom/spring-boot-zalando-stups-tokens/tokens-k8s-spring-boot-starter/credentials");
@@ -33,6 +33,16 @@ public class ClientsBeanTest {
         cb.initialize();
         Optional<ClientCredentials> clientOptional = ((Clients) cb).get("employee");
         Assertions.assertThat(clientOptional.isPresent()).isTrue();
+    }
+
+    @Test(expected = RequiredClientsNotFoundException.class)
+    public void testClientsBeanWithRequiredClientsMissing() {
+        SecretsProperties props = new SecretsProperties();
+        props.getRequiredClients().add("NotExistentClient");
+        props.setCredentialsDirectory(
+                "/Users/jbellmann/dev/work/zalando/ghcom/spring-boot-zalando-stups-tokens/tokens-k8s-spring-boot-starter/credentials");
+        ClientsBean cb = new ClientsBean(props);
+        cb.initialize();
     }
 
 }

@@ -16,21 +16,32 @@
 package org.zalando.secrets.spring.config;
 
 import static java.util.Objects.requireNonNull;
-import static org.springframework.util.Assert.isTrue;
 
 import java.io.File;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
+import org.zalando.secrets.Authorizations;
+import org.zalando.secrets.Clients;
 import org.zalando.secrets.spring.AccessTokensBean;
 import org.zalando.secrets.spring.ClientsBean;
 import org.zalando.secrets.spring.SecretsProperties;
+import org.zalando.stups.tokens.AccessTokens;
 
+/**
+ * Autoconfiguration for {@link AccessTokens} and {@link Authorizations} /
+ * {@link Clients}.
+ * 
+ * @author jbellmann
+ *
+ */
 @Configuration
 @EnableConfigurationProperties({ SecretsProperties.class })
 @EnableScheduling
+@ConditionalOnProperty(prefix = "tokens", name = "enabled", matchIfMissing = true)
 public class SecretsAutoConfiguration {
 
     @Bean
@@ -47,6 +58,9 @@ public class SecretsAutoConfiguration {
 
     protected void credentialsDirectoryMustExists(SecretsProperties secretsProperties) {
         String credentialsDirectoryPath = requireNonNull(secretsProperties.getCredentialsDirectory());
-        isTrue(new File(credentialsDirectoryPath).exists(), "Credentials-Directory does not exists");
+        if (!new File(credentialsDirectoryPath).exists()) {
+            throw new CredentialsDirectoryNotExistsException(secretsProperties);
+        }
     }
+
 }

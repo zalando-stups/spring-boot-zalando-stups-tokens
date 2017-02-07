@@ -16,7 +16,6 @@
 package org.zalando.secrets.spring;
 
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
@@ -53,7 +52,5 @@ public class ExampleApplicationTest {
 
         Optional<ClientCredentials> cc = clients.get("employee");
         Assertions.assertThat(cc.get()).isNotNull();
-
-        TimeUnit.SECONDS.sleep(20);
     }
 }
