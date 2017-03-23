@@ -39,7 +39,7 @@ Add the following to your pom.xml when using maven.
             - tokenId: secondService
               scopes: singleScope:all
 
-###Usage
+### Usage
 
 With this in place you can use the 'AccessTokens' anywhere in your application (@Autowire directly or in a configuration class), use it directly or inject it into some 'TokenProvider'-implementations that delegate somehow.
 
