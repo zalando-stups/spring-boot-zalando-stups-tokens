@@ -24,8 +24,8 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
-import org.springframework.boot.test.WebIntegrationTest;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.zalando.stups.tokens.AccessToken;
@@ -43,8 +43,7 @@ import com.google.common.collect.Iterables;
  * @author  jbellmann
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = {TokenTestApplication.class})
-@WebIntegrationTest(randomPort = false)
+@SpringBootTest(classes = {TokenTestApplication.class}, webEnvironment=WebEnvironment.DEFINED_PORT)
 @ActiveProfiles("custom")
 public class TokenTestApplicationIT {
 

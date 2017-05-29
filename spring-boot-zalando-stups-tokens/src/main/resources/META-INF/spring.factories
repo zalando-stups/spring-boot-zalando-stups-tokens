@@ -2,4 +2,5 @@
 #
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
 org.zalando.stups.tokens.config.AccessTokensBeanAutoConfiguration,\
-org.zalando.stups.tokens.config.MetricsListenerAutoConfiguration
+org.zalando.stups.tokens.config.MetricsListenerAutoConfiguration,\
+org.zalando.stups.tokens.config.SecretsAutoConfiguration

@@ -43,7 +43,7 @@ class FixedTokenAccessTokenRefresher extends AccessTokenRefresher {
     }
 
     @Override
-    void start() {
+    public void start() {
         initializeFixedTokensFromEnvironment();
         logger.info(getClass().getSimpleName() + " started");
         // do not start any scheduler, only initialize fixed tokens
