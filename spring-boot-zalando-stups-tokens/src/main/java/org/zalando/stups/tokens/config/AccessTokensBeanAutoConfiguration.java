@@ -53,12 +53,14 @@ public class AccessTokensBeanAutoConfiguration {
     private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
 
     @Bean
-    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
-        if (accessTokensBeanProperties.isEnableMock()) {
-            return new MockAccessTokensBean(accessTokensBeanProperties);
-        }
+    @ConditionalOnProperty(prefix = "tokens", name = "enable-mock", havingValue = "true")
+    public AccessTokensBean mockAccessTokensBean(BeanFactory beanFactory) {
+        return new MockAccessTokensBean(accessTokensBeanProperties);
+    }
 
-        //
+    @Bean
+    @ConditionalOnProperty(prefix = "tokens", name = "enable-mock", havingValue = "false", matchIfMissing=true)
+    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
         AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
         bean.setBeanFactory(beanFactory);
         bean.setMetricsListeners(metricsListeners);
@@ -70,7 +72,7 @@ public class AccessTokensBeanAutoConfiguration {
     }
 
     @Bean
-    @ConditionalOnProperty(prefix = "tokens", name = "exposeClientCredentialProvider", havingValue = "true")
+    @ConditionalOnProperty(prefix = "tokens", name = "expose-client-credential-provider", havingValue = "true")
     public ClientCredentialsProvider clientCredentialsProvider() {
         return new JsonFileBackedClientCredentialsProvider(
                 getCredentialsFile(accessTokensBeanProperties.getClientCredentialsFilename()));
