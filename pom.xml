@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.zalando.stups</groupId>
     <artifactId>tokens-spring-boot-starter-parent</artifactId>
-    <version>0.11.0-beta-4</version>
+    <version>0.11.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>OAuth2-Tokens Library - Build-Parent</description>
     <organization>
@@ -109,6 +109,6 @@
         <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
         <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
         <developerConnection>scm:git:git@github.com:zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
-        <tag>0.11.0-beta-4</tag>
+        <tag>HEAD</tag>
     </scm>
 </project>
