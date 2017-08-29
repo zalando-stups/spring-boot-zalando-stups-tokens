@@ -1,6 +1,9 @@
 package org.zalando.spring.boot.k8s;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 import org.slf4j.Logger;
@@ -25,6 +28,7 @@ public class K8sEnvironmentPostprocessor implements EnvironmentPostProcessor, Or
 
     public static final String K8S_PREFIX = "k8s";
     public static final String K8S_ENABLED_KEY = K8S_PREFIX + ".enabled";
+    public static final String K8S_NAMESPACE = K8S_PREFIX + ".namespace";
 
     private final String namespacePath = "/var/run/secrets/kubernetes.io/serviceaccount/namespace";
 
@@ -34,6 +38,7 @@ public class K8sEnvironmentPostprocessor implements EnvironmentPostProcessor, Or
         Properties properties = new Properties();
         if (specificFilesystemLayoutExists()) {
             properties.put(K8S_ENABLED_KEY, Boolean.TRUE.toString());
+            properties.put(K8S_NAMESPACE, readNamespace());
             log.info("'K8S'-metadata : {}", properties.toString());
         } else {
             log.info("Ignore 'K8S', no metadata available.");
@@ -53,6 +58,14 @@ public class K8sEnvironmentPostprocessor implements EnvironmentPostProcessor, Or
 
     protected boolean specificFilesystemLayoutExists() {
         return new File(namespacePath).exists();
+    }
+
+    protected String readNamespace() {
+        try {
+            return new String(Files.readAllBytes(Paths.get(namespacePath)));
+        } catch (IOException e) {
+            return "UNKNOWN";
+        }
     }
 
     // Before ConfigFileApplicationListener, so values there can use these ones
