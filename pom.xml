@@ -1,101 +1,92 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<parent>
-		<groupId>org.zalando.stups.build</groupId>
-		<artifactId>stups-parent</artifactId>
-		<version>7</version>
-		<relativePath />
-	</parent>
-	<groupId>org.zalando.stups</groupId>
-	<artifactId>tokens-spring-boot-starter-parent</artifactId>
-	<version>0.10.1-SNAPSHOT</version>
-	<packaging>pom</packaging>
-	<description>OAuth2-Tokens Library - Build-Parent</description>
-	<organization>
-		<name>Zalando SE</name>
-		<url>https://tech.zalando.com</url>
-	</organization>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.zalando.stups.build</groupId>
+        <artifactId>stups-parent</artifactId>
+        <version>7</version>
+        <relativePath />
+    </parent>
+    <groupId>org.zalando.stups</groupId>
+    <artifactId>tokens-spring-boot-starter-parent</artifactId>
+    <version>0.11.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <description>OAuth2-Tokens Library - Build-Parent</description>
+    <organization>
+        <name>Zalando SE</name>
+        <url>https://tech.zalando.com</url>
+    </organization>
 
-	<modules>
-		<module>spring-boot-zalando-stups-tokens</module>
-		<module>issues</module>
-		<module>tokens-k8s-spring-boot-starter</module>
-	</modules>
+    <modules>
+        <module>k8s-node-detector</module>
+        <module>spring-boot-zalando-stups-tokens</module>
+        <module>issues</module>
+        <!-- <module>tokens-k8s-spring-boot-starter</module> -->
+    </modules>
 
-	<properties>
-		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <properties>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-		<spring-boot.version>1.3.7.RELEASE</spring-boot.version>
-		<tokens.version>0.9.9</tokens.version>
+        <spring-boot.version>1.5.6.RELEASE</spring-boot.version>
+        <tokens.version>0.11.0-beta-2</tokens.version>
 
-		<java.source>1.7</java.source>
-		<java.target>1.7</java.target>
+        <argLine />
+    </properties>
 
-		<argLine />
-	</properties>
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <!-- Import dependency management from Spring Boot -->
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-dependencies</artifactId>
+                <version>${spring-boot.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
-	<dependencyManagement>
-		<dependencies>
-			<dependency>
-				<!-- Import dependency management from Spring Boot -->
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot.version}</version>
-				<type>pom</type>
-				<scope>import</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.assertj</groupId>
-				<artifactId>assertj-core</artifactId>
-				<!-- the 2.x.x releases are for Java 7 -->
-				<version>2.3.0</version>
-				<scope>test</scope>
-			</dependency>
-		</dependencies>
-	</dependencyManagement>
-
-	<build>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<groupId>org.jacoco</groupId>
-					<artifactId>jacoco-maven-plugin</artifactId>
-					<version>0.7.5.201505241946</version>
-					<executions>
-						<execution>
-							<id>default-prepare-agent</id>
-							<goals>
-								<goal>prepare-agent</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>default-prepare-agent-integration</id>
-							<goals>
-								<goal>prepare-agent-integration</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>default-report</id>
-							<goals>
-								<goal>report</goal>
-							</goals>
-						</execution>
-						<execution>
-							<id>default-report-integration</id>
-							<goals>
-								<goal>report-integration</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.jacoco</groupId>
+                    <artifactId>jacoco-maven-plugin</artifactId>
+                    <version>0.7.9</version>
+                    <executions>
+                        <execution>
+                            <id>default-prepare-agent</id>
+                            <goals>
+                                <goal>prepare-agent</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-prepare-agent-integration</id>
+                            <goals>
+                                <goal>prepare-agent-integration</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report</id>
+                            <goals>
+                                <goal>report</goal>
+                            </goals>
+                        </execution>
+                        <execution>
+                            <id>default-report-integration</id>
+                            <goals>
+                                <goal>report-integration</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
-                <version>2.10.3</version>
-                <configuration combine.self="override">
+                <version>2.10.4</version>
+                <configuration>
                     <breakiterator>true</breakiterator>
                     <header>${project.name}</header>
                     <source>${source.level}</source>
@@ -105,29 +96,19 @@
                     </links>
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <artifactId>maven-release-plugin</artifactId>
-                <version>2.5.1</version>
-                <configuration>
-                    <mavenExecutorId>forked-path</mavenExecutorId>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                    <useReleaseProfile>false</useReleaseProfile>
-                    <arguments>-Pcustom-release,maven</arguments>
-                    <tagNameFormat>@{project.version}</tagNameFormat>
-                    <remoteTagging>false</remoteTagging>
-                    <pushChanges>false</pushChanges>
-                    <localCheckout>true</localCheckout>
-                </configuration>
-            </plugin>
-            -->
+            <!-- <plugin> <artifactId>maven-release-plugin</artifactId> <version>2.5.1</version> 
+                <configuration> <mavenExecutorId>forked-path</mavenExecutorId> <autoVersionSubmodules>true</autoVersionSubmodules> 
+                <useReleaseProfile>false</useReleaseProfile> <arguments>-Pcustom-release,maven</arguments> 
+                <tagNameFormat>@{project.version}</tagNameFormat> <remoteTagging>false</remoteTagging> 
+                <pushChanges>false</pushChanges> <localCheckout>true</localCheckout> </configuration> 
+                </plugin> -->
         </plugins>
-	</build>
+    </build>
 
-	<scm>
-		<url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
-		<connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
-		<developerConnection>scm:git:git@github.com:zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
-		<tag>HEAD</tag>
-	</scm>
+    <scm>
+        <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
+        <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
+        <developerConnection>scm:git:git@github.com:zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
 </project>

@@ -34,6 +34,8 @@ import org.zalando.stups.tokens.ClientCredentialsProvider;
 @ConfigurationProperties(prefix = "tokens")
 public class AccessTokensBeanProperties {
 
+    private static final String DEFAULT_CREDENTIALS_DIR = "/meta/credentials";
+
     private static final String OAUTH2_ACCESS_TOKEN_URL = "OAUTH2_ACCESS_TOKEN_URL";
 
     private static final String CREDENTIALS_DIR = "CREDENTIALS_DIR";
@@ -62,8 +64,10 @@ public class AccessTokensBeanProperties {
     /**
      * Path to directory where credentials can be found (e.g. client.json,
      * user.json).
+     * 
+     * Defaults to : /meta/credentials
      */
-    private String credentialsDirectory = getFromEnvOrNull(CREDENTIALS_DIR);
+    private String credentialsDirectory = getCredentialsDirectoryPath(CREDENTIALS_DIR, DEFAULT_CREDENTIALS_DIR);
 
     /**
      * Filename for user-credentials.
@@ -116,9 +120,9 @@ public class AccessTokensBeanProperties {
      * If the {@link AccessTokensBean} should be started immediately after
      * creation, set this property to 'true'.
      * 
-     * Defaults to : false
+     * Defaults to : true
      */
-    private boolean startAfterCreation = false;
+    private boolean startAfterCreation = true;
 
     /**
      * If a mock of {@link AccessTokensBean} is needed set this property to
@@ -193,6 +197,24 @@ public class AccessTokensBeanProperties {
         } else {
             return null;
         }
+    }
+
+    private static String getFromEnvOrDefault(String property, String defaultValue) {
+        String value = getFromEnvOrNull(property);
+        if (org.springframework.util.StringUtils.hasText(value)) {
+            return value;
+        } else {
+            return defaultValue;
+        }
+    }
+    
+    private static String getCredentialsDirectoryPath(String property, String defaultValue) {
+        return getFromEnvOrDefault(property, defaultValue);
+//        if (new File(value).exists()) {
+//            return value;
+//        } else {
+//            throw new RuntimeException(String.format("The 'CREDENTIALS_DIR' -- %s-- does not exists.", value));
+//        }
     }
 
     private static URI initializeAccessTokenUrlFromEnvironment() {

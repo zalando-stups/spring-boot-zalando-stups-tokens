@@ -11,8 +11,6 @@
     <inceptionYear>2017</inceptionYear>
 
     <properties>
-        <spring-boot.version>1.4.4.RELEASE</spring-boot.version>
-        <tokens.version>0.9.9</tokens.version>
 
         <java.source>1.8</java.source>
         <java.target>1.8</java.target>
