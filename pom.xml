@@ -27,7 +27,7 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+        <spring-boot.version>1.5.6.RELEASE</spring-boot.version>
         <tokens.version>0.11.0-beta-2</tokens.version>
 
         <argLine />
