@@ -9,12 +9,12 @@
 
 Is a small wrapper around [Tokens](https://github.com/zalando-stups/tokens) with lifecycle-management and autoconfiguration-support in Spring-Boot applications.
 
-###Build
+### Build
 
     mvn install
 
 
-###Install
+### Install
 
 Add the following to your pom.xml when using maven.
 
@@ -24,7 +24,7 @@ Add the following to your pom.xml when using maven.
         <version>${version}</version>
     </dependency>
 
-###Configuration
+### Configuration
 
     tokens:
         accessTokenUri: http://localhost:9191/access_token?realm=whatever
@@ -39,7 +39,7 @@ Add the following to your pom.xml when using maven.
             - tokenId: secondService
               scopes: singleScope:all
 
-###Usage
+### Usage
 
 With this in place you can use the 'AccessTokens' anywhere in your application (@Autowire directly or in a configuration class), use it directly or inject it into some 'TokenProvider'-implementations that delegate somehow.
 

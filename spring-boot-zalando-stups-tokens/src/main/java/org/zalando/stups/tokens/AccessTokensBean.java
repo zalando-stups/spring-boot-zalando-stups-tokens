@@ -17,7 +17,6 @@ package org.zalando.stups.tokens;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.ScheduledExecutorService;
 
@@ -117,6 +116,12 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             return;
         }
 
+        if(!accessTokensBeanProperties.isEnableMock() && !isTestingConfigured()) {
+            if (!new File(accessTokensBeanProperties.getCredentialsDirectory()).isDirectory()) {
+                throw new CredentialsDirectoryNotExistsException(accessTokensBeanProperties.getCredentialsDirectory());
+            }
+        }
+
         logger.info("starting 'accessTokensBean' ...");
 
         AccessTokensBuilder builder = null;
@@ -152,7 +157,8 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             logger.info("configure scopes for service {}", tc.getTokenId());
 
             AccessTokenConfiguration configuration = builder.manageToken(tc.getTokenId());
-            configuration.addScopes(new HashSet<Object>(tc.getScopes()));
+            // configuration.addScopes(new HashSet<Object>(tc.getScopes()));
+            configuration.addScopesTypeSafe(tc.getScopes());
         }
 
         // percentages
@@ -172,6 +178,10 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         running = true;
         logger.info("'accessTokenRefresher' started.");
         logger.info("'accessTokensBean' started.");
+    }
+
+    public AbstractAccessTokenRefresher getDelegate() {
+        return (AbstractAccessTokenRefresher) this.accessTokensDelegate;
     }
 
     // @formatter:off

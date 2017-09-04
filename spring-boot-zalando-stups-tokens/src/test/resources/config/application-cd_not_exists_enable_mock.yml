@@ -1,0 +1,16 @@
+tokens:
+    accessTokenUri: http://localhost:9191/access_token?realm=whatever
+    credentialsDirectory: ${user.dir}/somepath/not/existent/path
+    refreshPercentLeft: 30
+    warnPercentLeft: 10
+    autoStartup: true
+    enableMock: true
+
+    token-configuration-list:
+        - tokenId: firstService
+          scopes:
+              - refole:read
+              - refole:write
+              - refole:all
+        - tokenId: secondService
+          scopes: singleScope:all
