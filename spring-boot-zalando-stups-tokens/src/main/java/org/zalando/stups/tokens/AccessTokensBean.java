@@ -116,6 +116,12 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
             return;
         }
 
+        if(!accessTokensBeanProperties.isEnableMock() && !isTestingConfigured()) {
+            if (!new File(accessTokensBeanProperties.getCredentialsDirectory()).isDirectory()) {
+                throw new CredentialsDirectoryNotExistsException(accessTokensBeanProperties.getCredentialsDirectory());
+            }
+        }
+
         logger.info("starting 'accessTokensBean' ...");
 
         AccessTokensBuilder builder = null;
