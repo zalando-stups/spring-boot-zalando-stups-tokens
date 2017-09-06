@@ -2,3 +2,6 @@
 #
 org.springframework.boot.env.EnvironmentPostProcessor=\
 org.zalando.spring.boot.k8s.K8sEnvironmentPostprocessor
+
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+org.zalando.spring.boot.k8s.actuator.InfoContributorConfig
