@@ -1,5 +1,7 @@
 package org.zalando.spring.boot.k8s;
 
+import static java.lang.Boolean.TRUE;
+
 import org.springframework.context.annotation.ConditionContext;
 import org.springframework.context.annotation.ConfigurationCondition;
 import org.springframework.core.type.AnnotatedTypeMetadata;
@@ -15,7 +17,7 @@ class OnKubernetesNodeCondition implements ConfigurationCondition {
 
     @Override
     public boolean matches(ConditionContext context, AnnotatedTypeMetadata metadata) {
-        return context.getEnvironment().getProperty(K8S_ENABLED, Boolean.class, false);
+        return TRUE.equals(context.getEnvironment().getProperty(K8S_ENABLED, Boolean.class, false));
     }
 
 }
