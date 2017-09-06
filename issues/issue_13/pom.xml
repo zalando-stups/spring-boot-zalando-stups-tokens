@@ -3,7 +3,7 @@
     <parent>
         <groupId>org.zalando.stups</groupId>
         <artifactId>issues</artifactId>
-        <version>0.11.0-SNAPSHOT</version>
+        <version>0.11.0-beta-6</version>
     </parent>
     <artifactId>issue_13</artifactId>
 
