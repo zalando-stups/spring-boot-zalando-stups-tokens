@@ -20,6 +20,7 @@ import org.zalando.stups.tokens.Secrets;
 public class SecretsAutoConfiguration {
 
     @Bean
+    @ConditionalOnProperty(prefix = "tokens", name = "enable-mock", havingValue = "false", matchIfMissing=true)
     public Secrets secrets(AccessTokensBean accessTokensBean) {
         return new SecretsAdapter((Secrets) accessTokensBean.getDelegate());
     }
