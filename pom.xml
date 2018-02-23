@@ -18,8 +18,8 @@
 
     <modules>
         <module>k8s-node-detector</module>
-        <module>spring-boot-zalando-stups-tokens</module>
-        <module>issues</module>
+        <module>tokens-spring-boot-starter</module>
+        <!-- <module>issues</module> -->
     </modules>
 
     <properties>
