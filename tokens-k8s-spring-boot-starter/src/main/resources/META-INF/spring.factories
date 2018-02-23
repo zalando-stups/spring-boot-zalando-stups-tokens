@@ -1,9 +1,0 @@
-# Auto Configure
-#
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-org.zalando.secrets.spring.config.SecretsAutoConfiguration
-
-org.springframework.boot.diagnostics.FailureAnalyzer=\
-org.zalando.secrets.spring.config.CredentialsDirectoryNotExistsFailureAnalyzer,\
-org.zalando.secrets.spring.config.RequiredClientsNotFoundFailureAnalyzer,\
-org.zalando.secrets.spring.config.RequiredTokensNotFoundFailureAnalyzer
