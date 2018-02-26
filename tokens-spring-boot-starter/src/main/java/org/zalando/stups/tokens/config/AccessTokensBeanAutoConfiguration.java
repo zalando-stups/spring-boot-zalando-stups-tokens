@@ -29,6 +29,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.zalando.stups.tokens.AccessToken;
 import org.zalando.stups.tokens.AccessTokenUnavailableException;
 import org.zalando.stups.tokens.AccessTokens;
@@ -60,9 +61,10 @@ public class AccessTokensBeanAutoConfiguration {
 
     @Bean
     @ConditionalOnProperty(prefix = "tokens", name = "enable-mock", havingValue = "false", matchIfMissing=true)
-    public AccessTokensBean accessTokensBean(BeanFactory beanFactory) {
+    public AccessTokensBean accessTokensBean(BeanFactory beanFactory, Environment environment) {
         AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
         bean.setBeanFactory(beanFactory);
+        bean.setEnvironment(environment);
         bean.setMetricsListeners(metricsListeners);
         if (accessTokensBeanProperties.isStartAfterCreation()) {
             logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
