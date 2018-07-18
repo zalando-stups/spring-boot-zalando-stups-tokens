@@ -38,7 +38,7 @@ compile('org.zalando.stups:tokens:${version}')
 No need to configure anything. Only put the dependency into your pom.xml.
 It uses `/meta/credentials` as a default folder to look for provided tokens by `PlatformCredentialsSet`.
 
-Want to migrate from STUPS to K8s? [See the hints]().
+Want to migrate from STUPS to K8s? [See the hints](#migration-from-zalandos-stups-env-to-zalandos-k8s-env).
 
 ### Usage in Zalandos STUPS environment
 
