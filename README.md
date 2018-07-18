@@ -5,44 +5,99 @@
 
 [![Try Initializer](https://img.shields.io/badge/assemble%20your%20spring--boot--app%20with-Zalando%20OSS%20Initializr-orange.svg)](https://initializr.machinery.zalan.do)
 
-## Spring-Boot STUPS AccessTokens Support
+## Tokens Support for Spring-Boot apps
 
 Is a small wrapper around [Tokens](https://github.com/zalando-stups/tokens) with lifecycle-management and autoconfiguration-support in Spring-Boot applications.
 
-### Build
-
-    mvn install
-
+With this in place you can use the 'AccessTokens' anywhere in your application (@Autowire directly or in a configuration class), use it directly or inject it into some 'TokenProvider'-implementations that delegate somehow.
 
 ### Install
 
-Add the following to your pom.xml when using maven.
+#### Maven
 
+Add the following to your `pom.xml`:
+
+```
     <dependency>
         <groupId>org.zalando.stups</groupId>
         <artifactId>tokens-spring-boot-starter</artifactId>
         <version>${version}</version>
     </dependency>
+```
 
-### Configuration
+#### Gradle
 
+Add the following to your `build.gradle`:
+
+```
+compile('org.zalando.stups:tokens:${version}')
+```
+
+### Usage in Zalandos K8s environment (with `PlatformCredentialsSet`)
+
+No need to configure anything. Only put the dependency into your pom.xml.
+It uses `/meta/credentials` as a default folder to look for provided tokens by `PlatformCredentialsSet`.
+
+Want to migrate from STUPS to K8s? [See the hints]().
+
+### Usage in Zalandos STUPS environment
+
+```
     tokens:
         accessTokenUri: http://localhost:9191/access_token?realm=whatever
-        credentialsDirectory: ${user.dir}/somepath/credentials
     
         token-configuration-list:
             - tokenId: firstService
               scopes:
-                  - refole:read
-                  - refole:write
-                  - refole:all
+                  - read
+                  - write
+                  - all
             - tokenId: secondService
-              scopes: singleScope:all
+              scopes: all
+```
 
-### Usage
+### Migration from Zalandos STUPS env to Zalandos K8s env
 
-With this in place you can use the 'AccessTokens' anywhere in your application (@Autowire directly or in a configuration class), use it directly or inject it into some 'TokenProvider'-implementations that delegate somehow.
+Most common issue users do is not mounting the the credentials. Make sure you have something like this
+in your `deployment.yaml`:
 
+```
+...
+          volumeMounts:
+          - name: "{{ APPLICATION }}-credentials"
+            mountPath: /meta/credentials
+            readOnly: true
+      volumes:
+        - name: "{{ APPLICATION }}-credentials"
+          secret:
+            secretName: "{{ APPLICATION }}-credentials"
+```
+
+Another issue would be that identifiers/names for tokens have to be same as before in your `credentials.yaml`:
+
+```
+apiVersion: "zalando.org/v1"
+kind: PlatformCredentialsSet
+metadata:
+   name: "{{ APPLICATION }}-credentials"
+spec:
+   application: "{{ APPLICATION }}"
+   tokens:
+     firstService:
+       privileges:
+         - com.zalando::read
+         - com.zalando::write
+         - com.zalando::all
+     secondService:
+       privileges:
+         - com.zalando::all
+```
+
+### Build
+
+```
+./mvnw install
+```
 
 ## License
 
