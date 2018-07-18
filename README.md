@@ -55,7 +55,7 @@ Want to migrate from STUPS to K8s? [See the hints](#migration-from-zalandos-stup
 
 ### Migration from Zalandos STUPS env to Zalandos K8s env
 
-A common issue is not mounting the the credentials. Please use the example below as a guide line.
+Please make sure the credentials are mounted as shown in the example below.
 
 ```
 ...
