@@ -8,7 +8,7 @@
     </parent>
     <groupId>org.zalando.stups</groupId>
     <artifactId>tokens-spring-boot-starter-parent</artifactId>
-    <version>0.11.0-SNAPSHOT</version>
+    <version>0.13.0-SNAPSHOT</version>
     <packaging>pom</packaging>
     <description>OAuth2-Tokens Library - Build-Parent</description>
     <organization>
@@ -18,17 +18,16 @@
 
     <modules>
         <module>k8s-node-detector</module>
-        <module>spring-boot-zalando-stups-tokens</module>
-        <module>issues</module>
-        <!-- <module>tokens-k8s-spring-boot-starter</module> -->
+        <module>tokens-spring-boot-starter</module>
+        <!-- <module>issues</module> -->
     </modules>
 
     <properties>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <spring-boot.version>1.5.6.RELEASE</spring-boot.version>
-        <tokens.version>0.11.0-beta-2</tokens.version>
+        <spring-boot.version>1.5.14.RELEASE</spring-boot.version>
+        <tokens.version>0.12.1</tokens.version>
 
         <argLine />
     </properties>
@@ -52,7 +51,7 @@
                 <plugin>
                     <groupId>org.jacoco</groupId>
                     <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.7.9</version>
+                    <version>0.8.1</version>
                     <executions>
                         <execution>
                             <id>default-prepare-agent</id>
@@ -96,18 +95,12 @@
                     </links>
                 </configuration>
             </plugin>
-            <!-- <plugin> <artifactId>maven-release-plugin</artifactId> <version>2.5.1</version> 
-                <configuration> <mavenExecutorId>forked-path</mavenExecutorId> <autoVersionSubmodules>true</autoVersionSubmodules> 
-                <useReleaseProfile>false</useReleaseProfile> <arguments>-Pcustom-release,maven</arguments> 
-                <tagNameFormat>@{project.version}</tagNameFormat> <remoteTagging>false</remoteTagging> 
-                <pushChanges>false</pushChanges> <localCheckout>true</localCheckout> </configuration> 
-                </plugin> -->
         </plugins>
     </build>
 
     <scm>
         <url>https://github.com/zalando-stups/spring-boot-zalando-stups-tokens</url>
-        <connection>scm:git:https://github.com/zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
+        <connection>scm:git:git@github.com:zalando-stups/spring-boot-zalando-stups-tokens.git</connection>
         <developerConnection>scm:git:git@github.com:zalando-stups/spring-boot-zalando-stups-tokens.git</developerConnection>
         <tag>HEAD</tag>
     </scm>

@@ -9,7 +9,7 @@ before_install:
     - pip install --user codecov
 
 script:
-    - mvn install
+    - ./mvnw install
 
 after_success:
     - codecov
