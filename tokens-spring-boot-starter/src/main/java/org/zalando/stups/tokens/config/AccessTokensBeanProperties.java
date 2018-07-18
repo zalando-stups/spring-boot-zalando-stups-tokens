@@ -210,11 +210,6 @@ public class AccessTokensBeanProperties {
     
     private static String getCredentialsDirectoryPath(String property, String defaultValue) {
         return getFromEnvOrDefault(property, defaultValue);
-//        if (new File(value).exists()) {
-//            return value;
-//        } else {
-//            throw new RuntimeException(String.format("The 'CREDENTIALS_DIR' -- %s-- does not exists.", value));
-//        }
     }
 
     private static URI initializeAccessTokenUrlFromEnvironment() {

@@ -29,9 +29,7 @@ import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.NoUniqueBeanDefinitionException;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.SmartLifecycle;
-import org.springframework.core.env.Environment;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.zalando.stups.tokens.config.AccessTokensBeanProperties;
@@ -42,7 +40,7 @@ import org.zalando.stups.tokens.mcb.MCBConfig;
 /**
  * @author jbellmann
  */
-public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware, EnvironmentAware {
+public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFactoryAware {
 
     static final String OAUTH2_ACCESS_TOKENS = "OAUTH2_ACCESS_TOKENS";
 
@@ -55,8 +53,6 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
     private volatile boolean running = false;
 
     private List<MetricsListener> metricsListeners = new ArrayList<MetricsListener>(0);
-
-    private Environment environment;
 
     public AccessTokensBean(final AccessTokensBeanProperties accessTokensBeanProperties) {
         this.accessTokensBeanProperties = accessTokensBeanProperties;
@@ -139,7 +135,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         } else {
 
             System.setProperty("CREDENTIALS_DIR", accessTokensBeanProperties.getCredentialsDirectory());
-            if(k8sEnabled()) {
+            if(AccessTokensBuilder.isFilesystemSecretsLayout()) {
                 builder = Tokens.createAccessTokensWithUri(create("http://not-exsitent.de"));
             }else {
                 builder = Tokens.createAccessTokensWithUri(accessTokensBeanProperties.getAccessTokenUri());
@@ -151,7 +147,7 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
         builder.schedulingPeriod(accessTokensBeanProperties.getRefresherSchedulingPeriod());
         builder.schedulingTimeUnit(accessTokensBeanProperties.getRefresherSchedulingTimeUnit());
 
-        if(!k8sEnabled()) {
+        if(!AccessTokensBuilder.isFilesystemSecretsLayout()) {
             logger.info("Assuming STUPS environment ...");
             builder.usingClientCredentialsProvider(getClientCredentialsProvider());
             builder.usingUserCredentialsProvider(getUserCredentialsProvider());
@@ -308,14 +304,5 @@ public class AccessTokensBean implements AccessTokens, SmartLifecycle, BeanFacto
     public void stop(final Runnable callback) {
         stop();
         callback.run();
-    }
-
-    @Override
-    public void setEnvironment(Environment environment) {
-        this.environment = environment;
-    }
-
-    protected boolean k8sEnabled() {
-        return environment.getProperty("k8s.enabled", Boolean.class, false);
     }
 }

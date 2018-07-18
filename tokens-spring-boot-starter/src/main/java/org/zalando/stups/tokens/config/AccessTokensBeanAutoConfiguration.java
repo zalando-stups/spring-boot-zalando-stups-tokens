@@ -64,7 +64,6 @@ public class AccessTokensBeanAutoConfiguration {
     public AccessTokensBean accessTokensBean(BeanFactory beanFactory, Environment environment) {
         AccessTokensBean bean = new AccessTokensBean(accessTokensBeanProperties);
         bean.setBeanFactory(beanFactory);
-        bean.setEnvironment(environment);
         bean.setMetricsListeners(metricsListeners);
         if (accessTokensBeanProperties.isStartAfterCreation()) {
             logger.info("'accessTokensBean' was configured to 'startAfterCreation', starting now ...");
