@@ -30,7 +30,7 @@ Add the following to your `pom.xml`:
 Add the following to your `build.gradle`:
 
 ```
-compile('org.zalando.stups:tokens:${version}')
+compile('org.zalando.stups:tokens-spring-boot-starter:${version}')
 ```
 
 ### Usage in Zalandos K8s environment (with `PlatformCredentialsSet`)
