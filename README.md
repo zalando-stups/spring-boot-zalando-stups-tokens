@@ -32,7 +32,7 @@ compile('org.zalando.stups:tokens-spring-boot-starter:${version}')
 
 ### Usage in Zalandos K8s environment (with `PlatformCredentialsSet`)
 
-No need to configure anything. Only put the dependency into your pom.xml.
+Only put the dependency into your pom.xml.
 It uses `/meta/credentials` as a default folder to look for provided tokens by `PlatformCredentialsSet`.
 
 Want to migrate from STUPS to K8s? [See the hints](#migration-from-zalandos-stups-env-to-zalandos-k8s-env).
@@ -55,8 +55,7 @@ Want to migrate from STUPS to K8s? [See the hints](#migration-from-zalandos-stup
 
 ### Migration from Zalandos STUPS env to Zalandos K8s env
 
-Most common issue users do is not mounting the the credentials. Make sure you have something like this
-in your `deployment.yaml`:
+A common issue is not mounting the the credentials. Please use the example below as a guide line.
 
 ```
 ...
@@ -70,7 +69,7 @@ in your `deployment.yaml`:
             secretName: "{{ APPLICATION }}-credentials"
 ```
 
-Another issue would be that identifiers/names for tokens have to be same as before in your `credentials.yaml`:
+Please also make sure that token identifiers/names must equal the respective items in `credentials.yaml`:
 
 ```
 apiVersion: "zalando.org/v1"
