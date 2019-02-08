@@ -27,7 +27,7 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
         <spring-boot.version>1.5.14.RELEASE</spring-boot.version>
-        <tokens.version>0.12.1</tokens.version>
+        <tokens.version>0.12.2</tokens.version>
 
         <argLine />
     </properties>
